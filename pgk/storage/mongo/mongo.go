@@ -5,8 +5,10 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -14,6 +16,10 @@ import (
 type Connection struct{}
 
 var Conn Connection
+
+type SingleResponse struct {
+	ID primitive.ObjectID `json:"id" bson:"id"`
+}
 
 func (c *Connection) Connect() *mongo.Client {
 	uri := config.AppConfig.MONGODB_URI
@@ -43,7 +49,7 @@ func (c *Connection) Ping(client *mongo.Client) {
 	// Send a ping to confirm a successful connection
 	var result bson.M
 	if err := client.Database("admin").RunCommand(context.TODO(), bson.D{{Key: "ping", Value: 1}}).Decode(&result); err != nil {
-		panic(err)
+		log.Panic(err)
 	}
 	fmt.Println("Pinged your deployment. You successfully connected to MongoDB!")
 }
@@ -52,27 +58,41 @@ func (c *Connection) InsertOne(database, collection string, s interface{}) *mong
 	client := Conn.Connect()
 	defer Conn.Disconnect(client)
 
-	result, err := client.Database(database).Collection(collection).InsertOne(context.TODO(), s)
+	coll := client.Database(database).Collection(collection)
+
+	result, err := coll.InsertOne(context.TODO(), s)
 	if err != nil {
 		message := fmt.Sprintf("error InsertOne database: `%s` collection: `%s`", database, collection)
 		log.Println(message, err)
+		return nil
 	}
 
 	return result
 }
 
-// func (c *Connection) FindOne(database, collection string, s interface{}) *mongo.SingleResult {
-// 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
-// 	defer cancel()
+func (c *Connection) Find(database, collection string, filter primitive.D, opts ...*options.FindOptions) []interface{} {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
-// 	client := Conn.Connect()
-// 	defer Conn.Disconnect(client)
+	client := Conn.Connect()
+	defer Conn.Disconnect(client)
 
-// 	result, err := client.Database(database).Collection(collection).InsertOne(context.TODO(), s)
-// 	if err != nil {
-// 		message := fmt.Sprintf("error FindOne database: `%s` collection: `%s`", database, collection)
-// 		log.Println(message, err)
-// 	}
+	coll := client.Database(database).Collection(collection)
 
-// 	return result
-// }
+	cursor, err := coll.Find(context.TODO(), filter, opts...)
+	if err != nil {
+		message := fmt.Sprintf("error FindOne database: `%s` collection: `%s`", database, collection)
+		log.Println(message, err)
+		return nil
+	}
+	defer cursor.Close(ctx)
+
+	var results []interface{}
+	if err := cursor.All(context.TODO(), &results); err != nil {
+		message := fmt.Sprintf("error FindOne::cursor.All database: `%s` collection: `%s`", database, collection)
+		log.Println(message, err)
+		return nil
+	}
+
+	return results
+}
