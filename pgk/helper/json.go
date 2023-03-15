@@ -7,7 +7,7 @@ import (
 
 func Marshal(v any) ([]byte, error) {
 	if config.AppConfig.MODE == "development" {
-		return json.MarshalIndent(v, "", "\t")
+		return json.MarshalIndent(v, "", "  ")
 	} else {
 		return json.Marshal(v)
 	}
