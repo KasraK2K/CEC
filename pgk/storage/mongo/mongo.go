@@ -2,6 +2,7 @@ package mongo
 
 import (
 	"CEC/pgk/config"
+	"CEC/pgk/helper"
 	"context"
 	"fmt"
 	"log"
@@ -54,7 +55,7 @@ func (c *Connection) Ping(client *mongo.Client) {
 	fmt.Println("Pinged your deployment. You successfully connected to MongoDB!")
 }
 
-func (c *Connection) InsertOne(database, collection string, s interface{}) *mongo.InsertOneResult {
+func (c *Connection) InsertOne(database, collection string, s interface{}) SingleResponse {
 	client := Conn.Connect()
 	defer Conn.Disconnect(client)
 
@@ -62,15 +63,13 @@ func (c *Connection) InsertOne(database, collection string, s interface{}) *mong
 
 	result, err := coll.InsertOne(context.TODO(), s)
 	if err != nil {
-		message := fmt.Sprintf("error InsertOne database: `%s` collection: `%s`", database, collection)
-		log.Println(message, err)
-		return nil
+		log.Panic(err)
 	}
 
-	return result
+	return SingleResponse{ID: result.InsertedID.(primitive.ObjectID)}
 }
 
-func (c *Connection) Find(database, collection string, filter primitive.D, opts ...*options.FindOptions) []interface{} {
+func (c *Connection) Find(database, collection string, filter primitive.D, opts ...*options.FindOptions) []primitive.M {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -81,17 +80,63 @@ func (c *Connection) Find(database, collection string, filter primitive.D, opts 
 
 	cursor, err := coll.Find(context.TODO(), filter, opts...)
 	if err != nil {
-		message := fmt.Sprintf("error FindOne database: `%s` collection: `%s`", database, collection)
-		log.Println(message, err)
-		return nil
+		log.Panic(err)
 	}
 	defer cursor.Close(ctx)
 
-	var results []interface{}
+	var results []primitive.M
 	if err := cursor.All(context.TODO(), &results); err != nil {
-		message := fmt.Sprintf("error FindOne::cursor.All database: `%s` collection: `%s`", database, collection)
-		log.Println(message, err)
-		return nil
+		log.Panic(err)
+	}
+
+	return results
+}
+
+func (c *Connection) BsonToJson(results []primitive.M) string {
+	var convertedResult []map[string]interface{}
+	for _, item := range results {
+		convertedItem := make(map[string]interface{})
+		for key, val := range item {
+			switch v := val.(type) {
+			case primitive.ObjectID:
+				convertedItem[key] = v.Hex()
+			case bson.M:
+				subMap := make(map[string]interface{})
+				for subKey, subVal := range v {
+					subMap[subKey] = subVal
+				}
+				convertedItem[key] = subMap
+			case bson.A:
+				subArray := make([]interface{}, len(v))
+				for i, subVal := range v {
+					subArray[i] = subVal
+				}
+				convertedItem[key] = subArray
+			default:
+				convertedItem[key] = v
+			}
+		}
+		convertedResult = append(convertedResult, convertedItem)
+	}
+
+	jsonBytes, err := helper.Marshal(convertedResult)
+	if err != nil {
+		panic(err)
+	}
+	jsonString := string(jsonBytes)
+
+	return jsonString
+}
+
+func (c *Connection) CursorToM(ctx context.Context, cursor *mongo.Cursor) []primitive.M {
+	var results []bson.M
+	for cursor.Next(ctx) {
+		var document bson.M
+		err := cursor.Decode(&document)
+		if err != nil {
+			log.Panic(err)
+		}
+		results = append(results, document)
 	}
 
 	return results
