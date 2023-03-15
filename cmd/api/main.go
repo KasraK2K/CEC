@@ -2,6 +2,8 @@ package main
 
 import (
 	"CEC/pgk/config"
+	"CEC/pgk/storage/mongo"
+	"fmt"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -39,10 +41,10 @@ func main() {
 	// fmt.Println(jsonPayload)
 	/* -------------------------------------------------------------------------- */
 
-	// filter := bson.D{{Key: "priority", Value: 0}}
+	filter := bson.D{{Key: "priority", Value: 0}}
 	opts := options.Find()
 	opts.SetSort(bson.D{{Key: "created_at", Value: -1}})
 
-	// result := mongo.Conn.Find("CEC", "log", filter, opts)
-	// fmt.Println(result)
+	result := mongo.Conn.Find("CEC", "log", filter, opts)
+	fmt.Println(result)
 }
