@@ -2,12 +2,19 @@ package main
 
 import (
 	"CEC/pgk/config"
+	"CEC/pgk/helper"
 	"CEC/pgk/storage/mongo"
 	"fmt"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
+
+type object struct {
+	Data bson.RawValue `bson:"data"`
+}
+
+var d interface{}
 
 func main() {
 	// Environment Variable
@@ -45,6 +52,8 @@ func main() {
 	opts := options.Find()
 	opts.SetSort(bson.D{{Key: "created_at", Value: -1}})
 
-	result := mongo.Conn.Find("CEC", "log", filter, opts)
-	fmt.Println(result)
+	results := mongo.Conn.Find("CEC", "log", filter, opts)
+
+	res, _ := helper.Marshal(results)
+	fmt.Println(string(res))
 }
