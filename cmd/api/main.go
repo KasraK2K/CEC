@@ -2,33 +2,47 @@ package main
 
 import (
 	"CEC/pgk/config"
-	"CEC/pgk/storage/mongo"
-	"net/http"
-	"time"
-)
 
-type Person struct {
-	Title    string      `json:"title" bson:"title"`
-	Message  string      `json:"message" bson:"message,omitempty"`
-	Priority int         `json:"priority" bson:"priority"`
-	Data     interface{} `json:"data" bson:"data,omitempty"`
-}
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo/options"
+)
 
 func main() {
 	// Environment Variable
 	config.SetConfig()
 
-	mongo.Conn.InsertOne("CEC", "log", Person{
-		Title:   "Test Log",
-		Message: "Test our log system by kasra's code",
-		Data: struct {
-			Creator string
-			Time    time.Time
-		}{
-			Creator: "Kasra",
-			Time:    time.Now(),
-		},
-	})
+	/* -------------------------------------------------------------------------- */
+	/*                                 Insert One                                 */
+	/* -------------------------------------------------------------------------- */
+	// person := new(model.Person)
+	// result, jsonResult := person.InsertOne("CEC", "log", model.Person{
+	// 	Title:   "Test Log",
+	// 	Message: "Test our log system by kasra's code",
+	// 	Data: struct {
+	// 		Name string `json:"name" bson:"name"`
+	// 	}{"Kasra"},
+	// }, true)
+	// fmt.Println("result:", result)
+	// fmt.Println("jsonResult:", jsonResult)
 
-	http.ListenAndServe(":3000", nil)
+	/* -------------------------------------------------------------------------- */
+
+	/* -------------------------------------------------------------------------- */
+	/*                                    Find                                    */
+	/* -------------------------------------------------------------------------- */
+	// person := new(model.Person)
+	// filter := bson.D{{Key: "priority", Value: 0}}
+	// opts := options.Find()
+	// opts.SetSort(bson.D{{Key: "created_at", Value: -1}})
+	// results, _ := person.Find("CEC", "log", filter, opts, true)
+	// fmt.Println(results)
+	// fmt.Println(jsonPayload)
+	/* -------------------------------------------------------------------------- */
+
+	// filter := bson.D{{Key: "priority", Value: 0}}
+	opts := options.Find()
+	opts.SetSort(bson.D{{Key: "created_at", Value: -1}})
+
+	// result := mongo.Conn.Find("CEC", "log", filter, opts)
+	// fmt.Println(result)
 }
