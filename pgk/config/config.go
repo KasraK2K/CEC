@@ -8,7 +8,8 @@ import (
 )
 
 type config struct {
-	Port        string `json:"port"`
+	PORT        string `json:"port"`
+	MODE        string `json:"mode"`
 	DB_HOST     string `json:"db_host"`
 	DB_PORT     string `json:"db_port"`
 	DB_PASSWORD string `json:"dn_password"`
@@ -28,7 +29,8 @@ func SetConfig() {
 	}
 
 	// Application
-	AppConfig.Port = os.Getenv("PORT")
+	AppConfig.PORT = os.Getenv("PORT")
+	AppConfig.MODE = os.Getenv("MODE")
 	// PostgreSQL Database
 	AppConfig.DB_HOST = os.Getenv("DB_HOST")
 	AppConfig.DB_PORT = os.Getenv("DB_PORT")
