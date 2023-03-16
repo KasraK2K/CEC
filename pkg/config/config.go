@@ -3,6 +3,7 @@ package config
 import (
 	"log"
 	"os"
+	"strconv"
 
 	"github.com/joho/godotenv"
 )
@@ -10,6 +11,7 @@ import (
 type config struct {
 	PORT        string `json:"port"`
 	MODE        string `json:"mode"`
+	PREFORK     bool   `json:"prefork"`
 	DB_HOST     string `json:"db_host"`
 	DB_PORT     string `json:"db_port"`
 	DB_PASSWORD string `json:"dn_password"`
@@ -28,9 +30,15 @@ func SetConfig() {
 		log.Fatal(err)
 	}
 
+	prefork, err := strconv.ParseBool(os.Getenv("PREFORK"))
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	// Application
 	AppConfig.PORT = os.Getenv("PORT")
 	AppConfig.MODE = os.Getenv("MODE")
+	AppConfig.PREFORK = prefork
 	// PostgreSQL Database
 	AppConfig.DB_HOST = os.Getenv("DB_HOST")
 	AppConfig.DB_PORT = os.Getenv("DB_PORT")

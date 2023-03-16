@@ -13,7 +13,7 @@ func main() {
 	config.SetConfig()
 
 	app := fiber.New(fiber.Config{
-		Prefork:       false,
+		Prefork:       config.AppConfig.PREFORK,
 		CaseSensitive: true,
 		StrictRouting: true,
 		ServerHeader:  "Fiber",
