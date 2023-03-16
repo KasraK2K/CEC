@@ -1,7 +1,7 @@
 package mongodb
 
 import (
-	"CEC/pgk/config"
+	"CEC/pkg/config"
 	"context"
 	"fmt"
 	"log"
