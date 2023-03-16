@@ -17,11 +17,17 @@ type connection struct{}
 
 var Conn connection
 
-type InsertOneResult struct {
+type insertOneResult struct {
 	ID interface{} `json:"id" bson:"id"`
 }
-type InsertManyResult struct {
+
+type insertManyResult struct {
 	IDS []interface{} `json:"ids" bson:"ids"`
+}
+
+type updateResult struct {
+	ID           string `json:"id" bson:"id"`
+	MatchedCount int64  `json:"matched_count" bson:"matched_count"`
 }
 
 func (c *connection) Connect() *mongo.Client {
@@ -75,9 +81,9 @@ func (c *connection) Ping(client *mongo.Client) {
 // res, _ := helper.Marshal(result)
 // fmt.Println(string(res))
 /* -------------------------------------------------------------------------- */
-func (c *connection) InsertOne(database, collection string, document interface{}) InsertOneResult {
-	client := Conn.Connect()
-	defer Conn.Disconnect(client)
+func (c *connection) InsertOne(database, collection string, document interface{}) insertOneResult {
+	client := c.Connect()
+	defer c.Disconnect(client)
 
 	coll := client.Database(database).Collection(collection)
 
@@ -86,7 +92,7 @@ func (c *connection) InsertOne(database, collection string, document interface{}
 		log.Panic(err)
 	}
 
-	return InsertOneResult{ID: result.InsertedID}
+	return insertOneResult{ID: result.InsertedID}
 }
 
 /* -------------------------------------------------------------------------- */
@@ -106,9 +112,9 @@ func (c *connection) InsertOne(database, collection string, document interface{}
 // res, _ := helper.Marshal(result)
 // fmt.Println(string(res))
 /* -------------------------------------------------------------------------- */
-func (c *connection) InsertMany(database, collection string, documents []interface{}, opts ...*options.InsertManyOptions) InsertManyResult {
-	client := Conn.Connect()
-	defer Conn.Disconnect(client)
+func (c *connection) InsertMany(database, collection string, documents []interface{}, opts ...*options.InsertManyOptions) insertManyResult {
+	client := c.Connect()
+	defer c.Disconnect(client)
 
 	coll := client.Database(database).Collection(collection)
 
@@ -117,7 +123,7 @@ func (c *connection) InsertMany(database, collection string, documents []interfa
 		log.Panic(err)
 	}
 
-	return InsertManyResult{IDS: results.InsertedIDs}
+	return insertManyResult{IDS: results.InsertedIDs}
 }
 
 /* -------------------------------------------------------------------------- */
@@ -133,15 +139,18 @@ func (c *connection) FindOne(database, collection string, filter bson.D, opts ..
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	client := Conn.Connect()
-	defer Conn.Disconnect(client)
+	client := c.Connect()
+	defer c.Disconnect(client)
 
-	Conn.sanitizeFilter(&filter)
+	c.sanitizeFilter(&filter)
 
 	coll := client.Database(database).Collection(collection)
 
 	var result bson.M
-	coll.FindOne(ctx, filter, opts...).Decode(&result)
+	err := coll.FindOne(ctx, filter, opts...).Decode(&result)
+	if err != nil {
+		log.Panic(err)
+	}
 
 	return result
 }
@@ -160,10 +169,10 @@ func (c *connection) Find(database, collection string, filter bson.D, opts ...*o
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	client := Conn.Connect()
-	defer Conn.Disconnect(client)
+	client := c.Connect()
+	defer c.Disconnect(client)
 
-	Conn.sanitizeFilter(&filter)
+	c.sanitizeFilter(&filter)
 
 	coll := client.Database(database).Collection(collection)
 
@@ -181,23 +190,67 @@ func (c *connection) Find(database, collection string, filter bson.D, opts ...*o
 	return results
 }
 
+/* -------------------------------------------------------------------------- */
+/*                                Update By ID                                */
+/* -------------------------------------------------------------------------- */
+// result := mongodb.Conn.UpdateByID("CEC", "log", "641196ac5986aae6482be366", bson.D{
+// 	{Key: "$set", Value: bson.D{
+// 		{Key: "title", Value: "new title"},
+// 	}},
+// })
+// res, _ := helper.Marshal(result)
+// fmt.Println(string(res))
+/* -------------------------------------------------------------------------- */
+func (c *connection) UpdateByID(database, collection, id string, update interface{}, opts ...*options.UpdateOptions) updateResult {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	client := c.Connect()
+	defer c.Disconnect(client)
+
+	coll := client.Database(database).Collection(collection)
+
+	docID, isValidId := c.checkId(id)
+	if !isValidId {
+		message := fmt.Sprintf("hex string `%s` is not a valid ObjectID", id)
+		log.Println(message)
+		return updateResult{ID: id, MatchedCount: 0}
+	}
+
+	result, err := coll.UpdateByID(ctx, docID, update, opts...)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	return updateResult{ID: id, MatchedCount: result.MatchedCount}
+}
+
+/* -------------------------------- Check ID -------------------------------- */
+// Check string id to be a valid id and convert it to ObjectID
+/* -------------------------------------------------------------------------- */
+func (c *connection) checkId(id string) (primitive.ObjectID, bool) {
+	// Check id is valid or not
+	isValidId := primitive.IsValidObjectID(id)
+	if !isValidId {
+		return primitive.NilObjectID, false
+	}
+	// Change id to ObjectId
+	docID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return primitive.NilObjectID, false
+	}
+	return docID, true
+}
+
 /* ----------------------------- Sanitize Filter ---------------------------- */
-// This filter have been created to get bson.D and change id to ObjectId
+// This filter have been created to get bson.D and change id to ObjectID
 /* -------------------------------------------------------------------------- */
 func (c *connection) sanitizeFilter(filter *bson.D) {
 	reservedFilter := *filter
 	for index, filterItem := range reservedFilter {
 		if filterItem.Key == "id" || filterItem.Key == "_id" {
-			// Check id is valid or not
-			isValidId := primitive.IsValidObjectID(filterItem.Value.(string))
+			docID, isValidId := c.checkId(filterItem.Value.(string))
 			if !isValidId {
-				message := fmt.Sprintf("id %s is not valid", filterItem.Value)
-				log.Println(message)
-				return
-			}
-			// Change id to ObjectId
-			docID, err := primitive.ObjectIDFromHex(filterItem.Value.(string))
-			if err != nil {
 				message := fmt.Sprintf("hex string `%s` is not a valid ObjectID", filterItem.Value)
 				log.Println(message)
 				return
