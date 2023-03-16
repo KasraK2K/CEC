@@ -26,8 +26,14 @@ type insertManyResult struct {
 }
 
 type updateResult struct {
-	ID           string `json:"id" bson:"id"`
-	MatchedCount int64  `json:"matched_count" bson:"matched_count"`
+	MatchedCount  int64       `json:"matched_count" bson:"matched_count"`
+	ModifiedCount int64       `json:"modified_count" bson:"modified_count"`
+	UpsertedCount int64       `json:"upserted_count" bson:"upserted_count"`
+	UpsertedID    interface{} `json:"upserted_id" bson:"upserted_id"`
+}
+
+type deleteResult struct {
+	DeletedCount int64 `json:"deleted_count" bson:"deleted_count"`
 }
 
 func (c *connection) Connect() *mongo.Client {
@@ -63,9 +69,7 @@ func (c *connection) Ping(client *mongo.Client) {
 	fmt.Println("Pinged your deployment. You successfully connected to MongoDB!")
 }
 
-/* -------------------------------------------------------------------------- */
-/*                                 Insert One                                 */
-/* -------------------------------------------------------------------------- */
+/* ------------------------------- Insert One ------------------------------- */
 // document := struct {
 // 	Title   string
 // 	Message string
@@ -95,9 +99,7 @@ func (c *connection) InsertOne(database, collection string, document interface{}
 	return insertOneResult{ID: result.InsertedID}
 }
 
-/* -------------------------------------------------------------------------- */
-/*                                 Insert Many                                */
-/* -------------------------------------------------------------------------- */
+/* ------------------------------- Insert Many ------------------------------ */
 // documents := []interface{}{
 // 	struct {
 // 		Title   string
@@ -126,9 +128,7 @@ func (c *connection) InsertMany(database, collection string, documents []interfa
 	return insertManyResult{IDS: results.InsertedIDs}
 }
 
-/* -------------------------------------------------------------------------- */
-/*                                  Find One                                  */
-/* -------------------------------------------------------------------------- */
+/* -------------------------------- Find One -------------------------------- */
 // filter := bson.D{{Key: "id", Value: "641196ac5986aae6482be366"}}
 // opts := options.FindOne()
 // result := mongodb.Conn.FindOne("CEC", "log", filter, opts)
@@ -155,9 +155,7 @@ func (c *connection) FindOne(database, collection string, filter bson.D, opts ..
 	return result
 }
 
-/* -------------------------------------------------------------------------- */
-/*                                    Find                                    */
-/* -------------------------------------------------------------------------- */
+/* ---------------------------------- Find ---------------------------------- */
 // filter := bson.D{{Key: "priority", Value: 0}}
 // opts := options.Find()
 // opts.SetSort(bson.D{{Key: "created_at", Value: -1}})
@@ -190,14 +188,13 @@ func (c *connection) Find(database, collection string, filter bson.D, opts ...*o
 	return results
 }
 
-/* -------------------------------------------------------------------------- */
-/*                                Update By ID                                */
-/* -------------------------------------------------------------------------- */
-// result := mongodb.Conn.UpdateByID("CEC", "log", "641196ac5986aae6482be366", bson.D{
-// 	{Key: "$set", Value: bson.D{
-// 		{Key: "title", Value: "new title"},
-// 	}},
-// })
+/* ------------------------------ Update By ID ------------------------------ */
+// result := mongodb.Conn.UpdateByID("CEC", "log", "641196ac5986aae6482be366",
+// 	bson.D{
+// 		{Key: "$set", Value: bson.D{
+// 			{Key: "title", Value: "new title"},
+// 		}},
+// 	})
 // res, _ := helper.Marshal(result)
 // fmt.Println(string(res))
 /* -------------------------------------------------------------------------- */
@@ -214,7 +211,12 @@ func (c *connection) UpdateByID(database, collection, id string, update interfac
 	if !isValidId {
 		message := fmt.Sprintf("hex string `%s` is not a valid ObjectID", id)
 		log.Println(message)
-		return updateResult{ID: id, MatchedCount: 0}
+		return updateResult{
+			MatchedCount:  0,
+			ModifiedCount: 0,
+			UpsertedCount: 0,
+			UpsertedID:    nil,
+		}
 	}
 
 	result, err := coll.UpdateByID(ctx, docID, update, opts...)
@@ -222,7 +224,106 @@ func (c *connection) UpdateByID(database, collection, id string, update interfac
 		log.Panic(err)
 	}
 
-	return updateResult{ID: id, MatchedCount: result.MatchedCount}
+	return updateResult{
+		MatchedCount:  result.MatchedCount,
+		ModifiedCount: result.ModifiedCount,
+		UpsertedCount: result.UpsertedCount,
+		UpsertedID:    result.UpsertedID,
+	}
+}
+
+/* ------------------------------- Update One ------------------------------- */
+// filter := bson.D{{Key: "id", Value: "641196ac5986aae6482be366"}}
+// result := mongodb.Conn.UpdateOne("CEC", "log", filter,
+// 	bson.D{
+// 		{Key: "$set", Value: bson.D{
+// 			{Key: "title", Value: "new title 2"},
+// 		}},
+// 	},
+// )
+// res, _ := helper.Marshal(result)
+// fmt.Println(string(res))
+/* -------------------------------------------------------------------------- */
+func (c *connection) UpdateOne(database, collection string, filter bson.D, update interface{}, opts ...*options.UpdateOptions) updateResult {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	client := c.Connect()
+	defer c.Disconnect(client)
+
+	c.sanitizeFilter(&filter)
+
+	coll := client.Database(database).Collection(collection)
+
+	result, err := coll.UpdateOne(ctx, filter, update, opts...)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	fmt.Println(result.UpsertedID)
+
+	return updateResult{
+		MatchedCount:  result.MatchedCount,
+		ModifiedCount: result.ModifiedCount,
+		UpsertedCount: result.UpsertedCount,
+		UpsertedID:    result.UpsertedID,
+	}
+}
+
+/* -------------------------------- DeleteOne ------------------------------- */
+// filter := bson.D{{Key: "id", Value: "6411d0a4db46166dde06ba4e"}}
+// result := mongodb.Conn.DeleteOne("CEC", "log", filter)
+// res, _ := helper.Marshal(result)
+// fmt.Println(string(res))
+/* -------------------------------------------------------------------------- */
+func (c *connection) DeleteOne(database, collection string, filter bson.D, opts ...*options.DeleteOptions) deleteResult {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	client := c.Connect()
+	defer c.Disconnect(client)
+
+	c.sanitizeFilter(&filter)
+
+	coll := client.Database(database).Collection(collection)
+
+	result, err := coll.DeleteOne(ctx, filter, opts...)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	return deleteResult{DeletedCount: result.DeletedCount}
+}
+
+/* ------------------------------- Replace One ------------------------------ */
+// filter := bson.D{{Key: "id", Value: "6411d0b7349067432e1d1eb1"}}
+// replacement := bson.D{{Key: "title", Value: "new title 2"}}
+// result := mongodb.Conn.ReplaceOne("CEC", "log", filter, replacement)
+// res, _ := helper.Marshal(result)
+// fmt.Println(string(res))
+/* -------------------------------------------------------------------------- */
+func (c *connection) ReplaceOne(database, collection string, filter bson.D, replacement interface{}, opts ...*options.ReplaceOptions) updateResult {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	client := c.Connect()
+	defer c.Disconnect(client)
+
+	c.sanitizeFilter(&filter)
+
+	coll := client.Database(database).Collection(collection)
+
+	result, err := coll.ReplaceOne(ctx, filter, replacement, opts...)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	return updateResult{
+		MatchedCount:  result.MatchedCount,
+		ModifiedCount: result.ModifiedCount,
+		UpsertedCount: result.UpsertedCount,
+		UpsertedID:    result.UpsertedID,
+	}
 }
 
 /* -------------------------------- Check ID -------------------------------- */
