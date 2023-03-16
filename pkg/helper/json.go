@@ -1,7 +1,7 @@
 package helper
 
 import (
-	"CEC/pgk/config"
+	"CEC/pkg/config"
 	"encoding/json"
 )
 
