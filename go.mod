@@ -1,4 +1,4 @@
-module CEC
+module app
 
 go 1.20
 
