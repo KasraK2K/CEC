@@ -11,8 +11,7 @@ func Routes(app *fiber.App) {
 	app.Get("/_health", health)
 	app.Get("/_metrics", monitor.New(monitor.Config{Title: "Default Metrics Page"}))
 
-	api := app.Group("/api")
-	v1 := api.Group("/v1")
+	v1 := app.Group("/v1")
 	user.Routes(v1)
 }
 

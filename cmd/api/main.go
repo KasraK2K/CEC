@@ -1,6 +1,7 @@
 package main
 
 import (
+	"CEC/cmd/routes"
 	"CEC/pkg/config"
 	"CEC/pkg/storage/pg"
 	"fmt"
@@ -11,6 +12,7 @@ import (
 
 func main() {
 	config.SetConfig()
+	pg.Conn.Connect()
 
 	app := fiber.New(fiber.Config{
 		Prefork:       config.AppConfig.PREFORK,
@@ -20,8 +22,10 @@ func main() {
 		AppName:       "Compare Electric Car v1.0.0",
 	})
 
-	// Call to fill DB in struct
-	pg.Conn.Connect()
+	// Middleware
+
+	// Router
+	routes.Routes(app)
 
 	log.Fatal(app.Listen(fmt.Sprintf(":%s", config.AppConfig.PORT)))
 }
