@@ -1,12 +1,13 @@
 package pg
 
 import (
-	"CEC/pkg/config"
 	"fmt"
 	"log"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+
+	"app/pkg/config"
 )
 
 type connection struct {

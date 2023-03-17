@@ -1,9 +1,9 @@
 package user
 
 import (
-	"CEC/pkg/storage/pg"
-
 	"github.com/gofiber/fiber/v2"
+
+	"app/pkg/storage/pg"
 )
 
 func Routes(router fiber.Router) {

@@ -1,8 +1,9 @@
 package helper
 
 import (
-	"CEC/pkg/config"
 	"encoding/json"
+
+	"app/pkg/config"
 )
 
 func Marshal(v any) ([]byte, error) {

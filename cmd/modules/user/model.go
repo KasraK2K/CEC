@@ -1,10 +1,11 @@
 package user
 
 import (
-	"CEC/pkg/helper"
 	"time"
 
 	"gorm.io/gorm"
+
+	"app/pkg/helper"
 )
 
 type User struct {

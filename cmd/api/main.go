@@ -1,13 +1,14 @@
 package main
 
 import (
-	"CEC/cmd/routes"
-	"CEC/pkg/config"
-	"CEC/pkg/storage/pg"
 	"fmt"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
+
+	"app/cmd/routes"
+	"app/pkg/config"
+	"app/pkg/storage/pg"
 )
 
 func main() {

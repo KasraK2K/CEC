@@ -1,7 +1,6 @@
 package mongodb
 
 import (
-	"CEC/pkg/config"
 	"context"
 	"fmt"
 	"log"
@@ -11,6 +10,8 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+
+	"app/pkg/config"
 )
 
 type connection struct{}
@@ -81,7 +82,7 @@ func (c *connection) Ping(client *mongo.Client) {
 // 		Name string `json:"name" bson:"name"`
 // 	}{"Kasra"},
 // }
-// result := mongodb.Conn.InsertOne("CEC", "log", document)
+// result := mongodb.Conn.InsertOne("cec", "log", document)
 // res, _ := helper.Marshal(result)
 // fmt.Println(string(res))
 /* -------------------------------------------------------------------------- */
@@ -110,7 +111,7 @@ func (c *connection) InsertOne(database, collection string, document interface{}
 // 		Age  int
 // 	}{Name: "Kasra", Age: 37},
 // }
-// result := mongodb.Conn.InsertMany("CEC", "log", documents)
+// result := mongodb.Conn.InsertMany("cec", "log", documents)
 // res, _ := helper.Marshal(result)
 // fmt.Println(string(res))
 /* -------------------------------------------------------------------------- */
@@ -131,7 +132,7 @@ func (c *connection) InsertMany(database, collection string, documents []interfa
 /* -------------------------------- Find One -------------------------------- */
 // filter := bson.D{{Key: "id", Value: "641196ac5986aae6482be366"}}
 // opts := options.FindOne()
-// result := mongodb.Conn.FindOne("CEC", "log", filter, opts)
+// result := mongodb.Conn.FindOne("cec", "log", filter, opts)
 // res, _ := helper.Marshal(result)
 // fmt.Println(string(res))
 /* -------------------------------------------------------------------------- */
@@ -159,7 +160,7 @@ func (c *connection) FindOne(database, collection string, filter bson.D, opts ..
 // filter := bson.D{{Key: "priority", Value: 0}}
 // opts := options.Find()
 // opts.SetSort(bson.D{{Key: "created_at", Value: -1}})
-// results := mongodb.Conn.Find("CEC", "log", filter, opts)
+// results := mongodb.Conn.Find("cec", "log", filter, opts)
 // res, _ := helper.Marshal(results)
 // fmt.Println(string(res))
 /* -------------------------------------------------------------------------- */
@@ -189,7 +190,7 @@ func (c *connection) Find(database, collection string, filter bson.D, opts ...*o
 }
 
 /* ------------------------------ Update By ID ------------------------------ */
-// result := mongodb.Conn.UpdateByID("CEC", "log", "641196ac5986aae6482be366",
+// result := mongodb.Conn.UpdateByID("cec", "log", "641196ac5986aae6482be366",
 // 	bson.D{
 // 		{Key: "$set", Value: bson.D{
 // 			{Key: "title", Value: "new title"},
@@ -234,7 +235,7 @@ func (c *connection) UpdateByID(database, collection, id string, update interfac
 
 /* ------------------------------- Update One ------------------------------- */
 // filter := bson.D{{Key: "id", Value: "641196ac5986aae6482be366"}}
-// result := mongodb.Conn.UpdateOne("CEC", "log", filter,
+// result := mongodb.Conn.UpdateOne("cec", "log", filter,
 // 	bson.D{
 // 		{Key: "$set", Value: bson.D{
 // 			{Key: "title", Value: "new title 2"},
@@ -272,7 +273,7 @@ func (c *connection) UpdateOne(database, collection string, filter bson.D, updat
 
 /* -------------------------------- DeleteOne ------------------------------- */
 // filter := bson.D{{Key: "id", Value: "6411d0a4db46166dde06ba4e"}}
-// result := mongodb.Conn.DeleteOne("CEC", "log", filter)
+// result := mongodb.Conn.DeleteOne("cec", "log", filter)
 // res, _ := helper.Marshal(result)
 // fmt.Println(string(res))
 /* -------------------------------------------------------------------------- */
@@ -298,7 +299,7 @@ func (c *connection) DeleteOne(database, collection string, filter bson.D, opts 
 /* ------------------------------- Replace One ------------------------------ */
 // filter := bson.D{{Key: "id", Value: "6411d0b7349067432e1d1eb1"}}
 // replacement := bson.D{{Key: "title", Value: "new title 2"}}
-// result := mongodb.Conn.ReplaceOne("CEC", "log", filter, replacement)
+// result := mongodb.Conn.ReplaceOne("cec", "log", filter, replacement)
 // res, _ := helper.Marshal(result)
 // fmt.Println(string(res))
 /* -------------------------------------------------------------------------- */

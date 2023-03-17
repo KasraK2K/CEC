@@ -1,10 +1,10 @@
 package routes
 
 import (
-	"CEC/cmd/modules/user"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/monitor"
+
+	"app/cmd/modules/user"
 )
 
 func Routes(app *fiber.App) {
