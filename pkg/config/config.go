@@ -25,7 +25,7 @@ type config struct {
 var AppConfig config
 
 func SetConfig() {
-	err := godotenv.Load("pgk/config/.env")
+	err := godotenv.Load("pkg/config/.env")
 	if err != nil {
 		log.Fatal(err)
 	}
