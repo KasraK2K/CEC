@@ -18,8 +18,8 @@ func Marshal(v any) ([]byte, error) {
 }
 
 func JSON(ctx *fiber.Ctx, data any, errors ...bool) error {
-	responseData := AddMetaData(data, errors...)
-	byteData, err := Marshal(responseData)
+	metadata := AddMetaData(data, errors...)
+	byteData, err := Marshal(*metadata)
 	if err != nil {
 		log.Panic(err)
 	}

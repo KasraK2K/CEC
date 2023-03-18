@@ -12,8 +12,8 @@ type metaData struct {
 	ERRORS           any    `json:"errors" bson:"errors,omitempty"`
 }
 
-func AddMetaData(data any, errors ...bool) metaData {
-	response := metaData{
+func AddMetaData(data any, errors ...bool) *metaData {
+	metadata := metaData{
 		BACKEND_VERSION:  config.AppConfig.BACKEND_VERSION,
 		FRONTEND_VERSION: config.AppConfig.FRONTEND_VERSION,
 		APP_VERSION:      config.AppConfig.APP_VERSION,
@@ -21,12 +21,12 @@ func AddMetaData(data any, errors ...bool) metaData {
 	}
 
 	if len(errors) > 0 && errors[0] {
-		response.SUCCESS = false
-		response.ERRORS = data
+		metadata.SUCCESS = false
+		metadata.ERRORS = data
 	} else {
-		response.SUCCESS = true
-		response.RESULT = data
+		metadata.SUCCESS = true
+		metadata.RESULT = data
 	}
 
-	return response
+	return &metadata
 }
