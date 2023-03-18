@@ -18,7 +18,7 @@ func main() {
 	app := fiber.New(fiber.Config{
 		Prefork:       config.AppConfig.PREFORK,
 		CaseSensitive: true,
-		StrictRouting: true,
+		StrictRouting: false,
 		ServerHeader:  "Fiber",
 		AppName:       "Compare Electric Car v1.0.0",
 	})
