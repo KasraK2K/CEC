@@ -21,7 +21,11 @@ func CreateUserLogic(user *User) (*User, []interface{}) {
 		errors = append(errors, validationError.Errors)
 	}
 
-	CreateUserRepository(user)
+	err := CreateUserRepository(user)
+	if err != nil {
+		errors = append(errors, err.Error())
+	}
+
 	return user, errors
 }
 
