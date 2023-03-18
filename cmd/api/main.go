@@ -6,6 +6,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 
+	"app/cmd/middleware"
 	"app/cmd/routes"
 	"app/pkg/config"
 	"app/pkg/storage/pg"
@@ -24,6 +25,7 @@ func main() {
 	})
 
 	// Middleware
+	app.Use(middleware.AddMiddleware)
 
 	// Router
 	routes.Routes(app)
