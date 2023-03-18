@@ -2,6 +2,8 @@ package user
 
 import (
 	"github.com/gofiber/fiber/v2"
+
+	"app/pkg/helper"
 )
 
 func GetAllUsersHandler(ctx *fiber.Ctx) error {
@@ -21,10 +23,10 @@ func CreateUserHandler(ctx *fiber.Ctx) error {
 
 	result, logicError := CreateUserLogic(user)
 	if logicError != nil {
-		return ctx.JSON(logicError)
+		return helper.JSON(ctx, logicError, true)
 	}
 
-	return ctx.JSON(result)
+	return helper.JSON(ctx, result)
 }
 
 func UpdateUserHandler(ctx *fiber.Ctx) error {
