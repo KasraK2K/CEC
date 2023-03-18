@@ -11,7 +11,7 @@ import (
 type User struct {
 	ID        uint           `json:"id"         bson:"id"         gorm:"type:uint;primaryKey;<-:false"`
 	FirstName string         `json:"first_name" bson:"first_name" gorm:"type:string;not null;"`
-	LastName  string         `json:"last_name"  bson:"last_name"  gorm:"type:string;"`
+	Surname   string         `json:"surname"    bson:"surname"    gorm:"type:string;"`
 	UserName  string         `json:"user_name"  bson:"user_name"  gorm:"type:string;unique;<-:create"                        validate:"required,min=3,max=15"`
 	Password  string         `json:"password"   bson:"password"   gorm:"type:string;check:length(password) >= 8"             validate:"required,min=8,max=32"`
 	Email     string         `json:"email"      bson:"email"      gorm:"type:string;unique;not null;"                        validate:"required,email,min=6,max=32"`
@@ -22,5 +22,5 @@ type User struct {
 }
 
 func (user *User) Validate() helper.ErrorResponse {
-	return helper.Validator(&user)
+	return helper.Validator(user)
 }
