@@ -6,33 +6,33 @@ import (
 	"app/pkg/helper"
 )
 
-func GetAllUsersHandler(ctx *fiber.Ctx) error {
-	return GetAllUsersLogic(ctx)
+func GetAllUsersHandler(c *fiber.Ctx) error {
+	return GetAllUsersLogic(c)
 }
 
-func GetOneUserHandler(ctx *fiber.Ctx) error {
-	return GetOneUserLogic(ctx)
+func GetOneUserHandler(c *fiber.Ctx) error {
+	return GetOneUserLogic(c)
 }
 
-func CreateUserHandler(ctx *fiber.Ctx) error {
+func CreateUserHandler(c *fiber.Ctx) error {
 	user := new(User)
-	parseError := ctx.BodyParser(user)
+	parseError := c.BodyParser(user)
 	if parseError != nil {
 		return parseError
 	}
 
 	result, logicError := CreateUserLogic(user)
 	if logicError != nil {
-		return helper.JSON(ctx, logicError, true)
+		return helper.JSON(c, logicError, true)
 	}
 
-	return helper.JSON(ctx, result)
+	return helper.JSON(c, result)
 }
 
-func UpdateUserHandler(ctx *fiber.Ctx) error {
-	return UpdateUserLogic(ctx)
+func UpdateUserHandler(c *fiber.Ctx) error {
+	return UpdateUserLogic(c)
 }
 
-func DeleteUserHandler(ctx *fiber.Ctx) error {
-	return DeleteUserLogic(ctx)
+func DeleteUserHandler(c *fiber.Ctx) error {
+	return DeleteUserLogic(c)
 }

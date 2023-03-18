@@ -6,12 +6,12 @@ import (
 	"app/pkg/storage/pg"
 )
 
-func GetAllUsersRepository(ctx *fiber.Ctx) error {
-	return ctx.SendString("Get All Users")
+func GetAllUsersRepository(c *fiber.Ctx) error {
+	return c.SendString("Get All Users")
 }
 
-func GetOneUserRepository(ctx *fiber.Ctx) error {
-	return ctx.SendString("Get One User")
+func GetOneUserRepository(c *fiber.Ctx) error {
+	return c.SendString("Get One User")
 }
 
 func CreateUserRepository(user *User) error {
@@ -22,10 +22,10 @@ func CreateUserRepository(user *User) error {
 	return nil
 }
 
-func UpdateUserRepository(ctx *fiber.Ctx) error {
-	return ctx.SendString("Update User")
+func UpdateUserRepository(c *fiber.Ctx) error {
+	return c.SendString("Update User")
 }
 
-func DeleteUserRepository(ctx *fiber.Ctx) error {
-	return ctx.SendString("Delete User")
+func DeleteUserRepository(c *fiber.Ctx) error {
+	return c.SendString("Delete User")
 }
