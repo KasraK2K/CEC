@@ -9,7 +9,7 @@ import (
 	"app/pkg/config"
 )
 
-func Marshal(v any) ([]byte, error) {
+func Marshal(v interface{}) ([]byte, error) {
 	if config.AppConfig.MODE == "development" {
 		return json.MarshalIndent(v, "", "  ")
 	} else {
@@ -17,12 +17,12 @@ func Marshal(v any) ([]byte, error) {
 	}
 }
 
-func JSON(ctx *fiber.Ctx, data any, errors ...bool) error {
+func JSON(c *fiber.Ctx, data any, errors ...bool) error {
 	metadata := AddMetaData(data, errors...)
 	byteData, err := Marshal(*metadata)
 	if err != nil {
 		log.Panic(err)
 	}
 
-	return ctx.SendString(string(byteData))
+	return c.SendString(string(byteData))
 }
