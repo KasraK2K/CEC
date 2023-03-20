@@ -17,7 +17,7 @@ func Marshal(v interface{}) ([]byte, error) {
 	}
 }
 
-func JSON(c *fiber.Ctx, data any, errors ...bool) error {
+func JSON(c *fiber.Ctx, data interface{}, errors ...bool) error {
 	metadata := AddMetaData(data, errors...)
 	byteData, err := Marshal(metadata)
 	if err != nil {
