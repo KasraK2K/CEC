@@ -13,38 +13,38 @@ var Logger logger
 /* -------------------------------------------------------------------------- */
 /*                               Stdout Loggers                               */
 /* -------------------------------------------------------------------------- */
-func (l *logger) Info(v ...any) {
+func (l *logger) Info(v ...interface{}) {
 	l.initLogger("\u001b[32;1mINFO\x1b[0m:    ", v...)
 }
 
-func (l *logger) Verbose(v ...any) {
+func (l *logger) Verbose(v ...interface{}) {
 	l.initLogger("\u001b[34;1mVERBOSE\x1b[0m: ", v...)
 }
 
-func (l *logger) Warning(v ...any) {
+func (l *logger) Warning(v ...interface{}) {
 	l.initLogger("\u001b[38;5;226mWARNING\x1b[0m: ", v...)
 }
 
-func (l *logger) Error(v ...any) {
+func (l *logger) Error(v ...interface{}) {
 	l.initLogger("\x1b[31mERROR\x1b[0m:   ", v...)
 }
 
 /* -------------------------------------------------------------------------- */
 /*                                File Loggers                                */
 /* -------------------------------------------------------------------------- */
-func (l *logger) InfoFile(v ...any) {
+func (l *logger) InfoFile(v ...interface{}) {
 	l.initFileLogger("info", v...)
 }
 
-func (l *logger) VerboseFile(v ...any) {
+func (l *logger) VerboseFile(v ...interface{}) {
 	l.initFileLogger("verbose", v...)
 }
 
-func (l *logger) WarningFile(v ...any) {
+func (l *logger) WarningFile(v ...interface{}) {
 	l.initFileLogger("warning", v...)
 }
 
-func (l *logger) ErrorFile(v ...any) {
+func (l *logger) ErrorFile(v ...interface{}) {
 	l.initFileLogger("error", v...)
 }
 
@@ -57,13 +57,13 @@ func (l *logger) folderExistence() {
 	}
 }
 
-func (l *logger) initLogger(prefix string, v ...any) {
+func (l *logger) initLogger(prefix string, v ...interface{}) {
 	flags := log.Ldate | log.Ltime
 	errorLogger := log.New(os.Stdout, prefix, flags)
 	errorLogger.Println(v...)
 }
 
-func (l *logger) initFileLogger(fileName string, v ...any) {
+func (l *logger) initFileLogger(fileName string, v ...interface{}) {
 	l.folderExistence()
 	flags := log.Ldate | log.Ltime
 	file, _ := os.OpenFile(fmt.Sprintf("log/%s.log", fileName), os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0666)
