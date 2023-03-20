@@ -8,8 +8,8 @@ type metaData struct {
 	APP_VERSION      string      `json:"app_version" bson:"app_version"`
 	MODE             string      `json:"mode" bson:"mode"`
 	SUCCESS          bool        `json:"success" bson:"success"`
-	RESULT           interface{} `json:"result,omitempty" bson:"result,omitempty"`
-	ERRORS           interface{} `json:"errors" bson:"errors,omitempty"`
+	RESULT           interface{} `json:"result" bson:"result"`
+	ERRORS           interface{} `json:"errors" bson:"errors"`
 }
 
 func AddMetaData(data interface{}, errors ...bool) *metaData {
