@@ -53,16 +53,34 @@ func TestMarshal(t *testing.T) {
 }
 
 func TestJSON(t *testing.T) {
-	mockData := TestJsonStruct{
-		Name: "Kasra",
-		Age:  37,
-	}
+	t.Run("Success", func(t *testing.T) {
+		mockData := TestJsonStruct{
+			Name: "Kasra",
+			Age:  37,
+		}
+		app := fiber.New()
+		c := app.AcquireCtx(&fasthttp.RequestCtx{})
 
-	app := fiber.New()
-	c := app.AcquireCtx(&fasthttp.RequestCtx{})
+		err := JSON(c, mockData)
+		if err != nil {
+			t.Errorf("error on JSON command: %v", err)
+		}
+	})
 
-	err := JSON(c, mockData)
-	if err != nil {
-		t.Errorf("error on JSON command: %v", err)
-	}
+	t.Run("Error", func(t *testing.T) {
+		defer func() {
+			if r := recover(); r == nil {
+				t.Errorf("The code did not panic")
+			}
+		}()
+
+		mockData := make(chan int)
+		app := fiber.New()
+		c := app.AcquireCtx(&fasthttp.RequestCtx{})
+
+		err := JSON(c, mockData)
+		if err == nil {
+			t.Errorf("The error is nil but we expected to be something")
+		}
+	})
 }
