@@ -6,29 +6,37 @@ import (
 	"app/pkg/helper"
 )
 
-func GetHandler(c *fiber.Ctx) error {
-	filter := new(PortalUserFilter)
-	parseError := c.BodyParser(filter)
+type handler struct{}
+
+var Handler handler
+
+func (h *handler) List(c *fiber.Ctx) error {
+	type JsonData struct {
+		Filter PortalUserFilter `json:"filter"`
+	}
+	var payload JsonData
+	parseError := c.BodyParser(&payload)
 	if parseError != nil {
-		return parseError
+		return helper.JSON(c, parseError.Error(), true)
 	}
 
-	result, logicError := GetAllLogic(filter)
+	filter := payload.Filter
+	results, logicError := Logic.List(filter)
 	if logicError != nil {
 		return helper.JSON(c, logicError, true)
 	}
 
-	return helper.JSON(c, result)
+	return helper.JSON(c, results)
 }
 
-func CreateHandler(c *fiber.Ctx) error {
+func (h *handler) Insert(c *fiber.Ctx) error {
 	portal_user := new(PortalUser)
 	parseError := c.BodyParser(portal_user)
 	if parseError != nil {
-		return parseError
+		return helper.JSON(c, parseError.Error(), true)
 	}
 
-	result, logicError := CreateLogic(portal_user)
+	result, logicError := Logic.Insert(*portal_user)
 	if logicError != nil {
 		return helper.JSON(c, logicError, true)
 	}
@@ -36,10 +44,27 @@ func CreateHandler(c *fiber.Ctx) error {
 	return helper.JSON(c, result)
 }
 
-func UpdateHandler(c *fiber.Ctx) error {
-	return UpdateLogic(c)
+func (h *handler) Update(c *fiber.Ctx) error {
+	type JsonData struct {
+		Filter     PortalUserFilter `json:"filter"`
+		PortalUser PortalUser       `json:"portal_user"`
+	}
+	var payload JsonData
+	parseError := c.BodyParser(&payload)
+	if parseError != nil {
+		return helper.JSON(c, parseError.Error(), true)
+	}
+
+	filter := payload.Filter
+	portal_user := payload.PortalUser
+	result, logicError := Logic.Update(filter, portal_user)
+	if logicError != nil {
+		return helper.JSON(c, logicError, true)
+	}
+
+	return helper.JSON(c, result)
 }
 
-func DeleteHandler(c *fiber.Ctx) error {
-	return DeleteLogic(c)
+func (h *handler) Archive(c *fiber.Ctx) error {
+	return Logic.Archive(c)
 }

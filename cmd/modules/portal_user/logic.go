@@ -4,7 +4,11 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func GetAllLogic(filter *PortalUserFilter) ([]PortalUser, []interface{}) {
+type logic struct{}
+
+var Logic logic
+
+func (l *logic) List(filter PortalUserFilter) ([]PortalUser, []interface{}) {
 	var errors []interface{} = nil
 
 	//Validate PortalUser Struct
@@ -13,7 +17,7 @@ func GetAllLogic(filter *PortalUserFilter) ([]PortalUser, []interface{}) {
 		errors = append(errors, validationError.Errors)
 	}
 
-	results, err := GetAllRepository(*filter)
+	results, err := Repository.List(filter)
 	if err != nil {
 		errors = append(errors, err.Error())
 	}
@@ -21,7 +25,7 @@ func GetAllLogic(filter *PortalUserFilter) ([]PortalUser, []interface{}) {
 	return results, errors
 }
 
-func CreateLogic(portal_user *PortalUser) (PortalUser, []interface{}) {
+func (l *logic) Insert(portal_user PortalUser) (PortalUser, []interface{}) {
 	var errors []interface{} = nil
 
 	//Validate PortalUser Struct
@@ -30,7 +34,7 @@ func CreateLogic(portal_user *PortalUser) (PortalUser, []interface{}) {
 		errors = append(errors, validationError.Errors)
 	}
 
-	result, err := CreateRepository(*portal_user)
+	result, err := Repository.Insert(portal_user)
 	if err != nil {
 		errors = append(errors, err.Error())
 	}
@@ -38,10 +42,29 @@ func CreateLogic(portal_user *PortalUser) (PortalUser, []interface{}) {
 	return result, errors
 }
 
-func UpdateLogic(c *fiber.Ctx) error {
-	return UpdateRepository(c)
+func (l *logic) Update(filter PortalUserFilter, portal_user PortalUser) (PortalUser, []interface{}) {
+	var errors []interface{} = nil
+
+	updatePortalUser := PortalUserUpdate(portal_user)
+	updateValidationError := updatePortalUser.Validate()
+	if updateValidationError.Errors != nil {
+		errors = append(errors, updateValidationError.Errors)
+	}
+
+	//Validate PortalUser Struct
+	filterValidationError := filter.Validate()
+	if filterValidationError.Errors != nil {
+		errors = append(errors, filterValidationError.Errors)
+	}
+
+	result, err := Repository.Update(filter, portal_user)
+	if err != nil {
+		errors = append(errors, err.Error())
+	}
+
+	return result, errors
 }
 
-func DeleteLogic(c *fiber.Ctx) error {
-	return DeleteRepository(c)
+func (l *logic) Archive(c *fiber.Ctx) error {
+	return Repository.Archive(c)
 }
