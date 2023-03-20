@@ -6,7 +6,7 @@ import (
 	"app/pkg/storage/pg"
 )
 
-func GetAllRepository(filter *PortalUserFilter) ([]PortalUser, error) {
+func GetAllRepository(filter PortalUserFilter) ([]PortalUser, error) {
 	var portalUsers []PortalUser
 	result := pg.Conn.DB.Find(&portalUsers, filter)
 	if result.Error != nil {
@@ -15,12 +15,12 @@ func GetAllRepository(filter *PortalUserFilter) ([]PortalUser, error) {
 	return portalUsers, nil
 }
 
-func CreateRepository(portal_user *PortalUser) error {
+func CreateRepository(portal_user PortalUser) (PortalUser, error) {
 	result := pg.Conn.DB.Create(&portal_user)
 	if result.Error != nil {
-		return result.Error
+		return PortalUser{}, result.Error
 	}
-	return nil
+	return portal_user, nil
 }
 
 func UpdateRepository(c *fiber.Ctx) error {

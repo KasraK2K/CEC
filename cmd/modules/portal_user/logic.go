@@ -13,7 +13,7 @@ func GetAllLogic(filter *PortalUserFilter) ([]PortalUser, []interface{}) {
 		errors = append(errors, validationError.Errors)
 	}
 
-	results, err := GetAllRepository(filter)
+	results, err := GetAllRepository(*filter)
 	if err != nil {
 		errors = append(errors, err.Error())
 	}
@@ -21,7 +21,7 @@ func GetAllLogic(filter *PortalUserFilter) ([]PortalUser, []interface{}) {
 	return results, errors
 }
 
-func CreateLogic(portal_user *PortalUser) (*PortalUser, []interface{}) {
+func CreateLogic(portal_user *PortalUser) (PortalUser, []interface{}) {
 	var errors []interface{} = nil
 
 	//Validate PortalUser Struct
@@ -30,12 +30,12 @@ func CreateLogic(portal_user *PortalUser) (*PortalUser, []interface{}) {
 		errors = append(errors, validationError.Errors)
 	}
 
-	err := CreateRepository(portal_user)
+	result, err := CreateRepository(*portal_user)
 	if err != nil {
 		errors = append(errors, err.Error())
 	}
 
-	return portal_user, errors
+	return result, errors
 }
 
 func UpdateLogic(c *fiber.Ctx) error {
