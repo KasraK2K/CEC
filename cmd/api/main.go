@@ -16,7 +16,6 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
 
-	"app/cmd/middleware"
 	"app/cmd/routes"
 	"app/pkg/config"
 	"app/pkg/storage/pg"
@@ -44,7 +43,6 @@ func main() {
 	app.Use(logger.New())
 	app.Use(recover.New())
 	app.Use(requestid.New())
-	app.Use(middleware.AddMiddleware)
 
 	// Router
 	routes.Routes(app)
