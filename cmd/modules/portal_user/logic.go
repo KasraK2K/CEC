@@ -2,8 +2,6 @@ package portal_user
 
 import (
 	"net/http"
-
-	"github.com/gofiber/fiber/v2"
 )
 
 type logic struct{}
@@ -13,7 +11,7 @@ var Logic logic
 func (l *logic) List(filter PortalUserFilter) ([]PortalUser, int, []interface{}) {
 	var errors []interface{} = nil
 
-	//Validate PortalUser Struct
+	// Validate PortalUserFilter Struct
 	validationError := filter.Validate()
 	if validationError.Errors != nil {
 		errors = append(errors, validationError.Errors)
@@ -74,6 +72,21 @@ func (l *logic) Update(filter PortalUserFilter, portal_user PortalUser) (PortalU
 	return result, status, errors
 }
 
-func (l *logic) Archive(c *fiber.Ctx) error {
-	return Repository.Archive(c)
+func (l *logic) Archive(filter PortalUserFilter) (interface{}, int, []interface{}) {
+	var errors []interface{} = nil
+
+	// Validate PortalUserFilter Struct
+	validationError := filter.Validate()
+	if validationError.Errors != nil {
+		errors = append(errors, validationError.Errors)
+		return filter, http.StatusNotAcceptable, errors
+	}
+
+	results, status, err := Repository.Archive(filter)
+	if err != nil {
+		errors = append(errors, err.Error())
+		return filter, status, errors
+	}
+
+	return results, status, errors
 }

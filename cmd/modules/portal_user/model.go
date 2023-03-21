@@ -29,12 +29,12 @@ func (portal_user *PortalUser) Validate() helper.ErrorResponse {
 }
 
 type PortalUserFilter struct {
-	ID        uint8  `json:"id"         bson:"id"`
-	Email     string `json:"email"      bson:"email"`
-	Gender    uint8  `json:"gender"     bson:"gender"`
-	IsActive  bool   `json:"is_active"  bson:"is_active"`
-	IsAdmin   bool   `json:"is_admin"   bson:"is_admin"`
-	IsArchive bool   `json:"is_archive" bson:"is_archive"`
+	ID        uint8  `json:"id,omitempty"         bson:"id,omitempty"`
+	Email     string `json:"email,omitempty"      bson:"email,omitempty"`
+	Gender    uint8  `json:"gender,omitempty"     bson:"gender,omitempty"`
+	IsActive  bool   `json:"is_active,omitempty"  bson:"is_active,omitempty"`
+	IsAdmin   bool   `json:"is_admin,omitempty"   bson:"is_admin,omitempty"`
+	IsArchive bool   `json:"is_archive,omitempty" bson:"is_archive,omitempty"`
 }
 
 func (filter *PortalUserFilter) Validate() helper.ErrorResponse {
