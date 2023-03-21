@@ -16,10 +16,12 @@ var Repository repository
 
 func (r *repository) List(filter PortalUserFilter) ([]PortalUser, int, error) {
 	var portalUsers []PortalUser
+
 	result := pg.Conn.DB.Model(&PortalUser{}).Find(&portalUsers, filter)
 	if result.Error != nil {
 		return []PortalUser{}, http.StatusInternalServerError, result.Error
 	}
+
 	return portalUsers, http.StatusOK, nil
 }
 
