@@ -78,10 +78,10 @@ func (h *handler) Archive(c *fiber.Ctx) error {
 	}
 
 	filter := payload.Filter
-	results, status, logicError := Logic.Archive(filter)
+	result, status, logicError := Logic.Archive(filter)
 	if logicError != nil {
 		return helper.JSON(c, logicError, status)
 	}
 
-	return helper.JSON(c, results, status)
+	return helper.JSON(c, result, status)
 }

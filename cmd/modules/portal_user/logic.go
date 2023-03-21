@@ -72,21 +72,21 @@ func (l *logic) Update(filter PortalUserFilter, portal_user PortalUser) (PortalU
 	return result, status, errors
 }
 
-func (l *logic) Archive(filter PortalUserFilter) (interface{}, int, []interface{}) {
+func (l *logic) Archive(filter PortalUserFilter) (PortalUser, int, []interface{}) {
 	var errors []interface{} = nil
 
 	// Validate PortalUserFilter Struct
 	validationError := filter.Validate()
 	if validationError.Errors != nil {
 		errors = append(errors, validationError.Errors)
-		return filter, http.StatusNotAcceptable, errors
+		return PortalUser{}, http.StatusNotAcceptable, errors
 	}
 
-	results, status, err := Repository.Archive(filter)
+	result, status, err := Repository.Archive(filter)
 	if err != nil {
 		errors = append(errors, err.Error())
-		return filter, status, errors
+		return PortalUser{}, status, errors
 	}
 
-	return results, status, errors
+	return result, status, errors
 }

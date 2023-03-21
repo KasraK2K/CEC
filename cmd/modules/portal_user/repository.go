@@ -4,6 +4,8 @@ import (
 	"errors"
 	"net/http"
 
+	"gorm.io/gorm/clause"
+
 	"app/pkg/storage/pg"
 )
 
@@ -41,11 +43,13 @@ func (r *repository) Update(filter interface{}, portal_user PortalUser) (PortalU
 	return portal_user, http.StatusOK, nil
 }
 
-func (r *repository) Archive(filter interface{}) (interface{}, int, error) {
-	result := pg.Conn.DB.Delete(&PortalUser{}, filter)
+func (r *repository) Archive(filter interface{}) (PortalUser, int, error) {
+	var portal_user PortalUser
+	result := pg.Conn.DB.Clauses(clause.Returning{}).Order("created_at desc").Take(&portal_user, filter).Delete(&portal_user)
+
 	if result.Error != nil {
-		return filter, http.StatusInternalServerError, result.Error
+		return portal_user, http.StatusInternalServerError, result.Error
 	}
 
-	return filter, http.StatusOK, nil
+	return portal_user, http.StatusOK, nil
 }
