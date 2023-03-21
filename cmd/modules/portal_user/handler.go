@@ -1,6 +1,8 @@
 package portal_user
 
 import (
+	"net/http"
+
 	"github.com/gofiber/fiber/v2"
 
 	"app/pkg/helper"
@@ -17,31 +19,31 @@ func (h *handler) List(c *fiber.Ctx) error {
 	var payload JsonData
 	parseError := c.BodyParser(&payload)
 	if parseError != nil {
-		return helper.JSON(c, parseError.Error(), true)
+		return helper.JSON(c, parseError.Error(), http.StatusBadRequest)
 	}
 
 	filter := payload.Filter
-	results, logicError := Logic.List(filter)
+	results, status, logicError := Logic.List(filter)
 	if logicError != nil {
-		return helper.JSON(c, logicError, true)
+		return helper.JSON(c, logicError, status)
 	}
 
-	return helper.JSON(c, results)
+	return helper.JSON(c, results, status)
 }
 
 func (h *handler) Insert(c *fiber.Ctx) error {
 	portal_user := new(PortalUser)
 	parseError := c.BodyParser(portal_user)
 	if parseError != nil {
-		return helper.JSON(c, parseError.Error(), true)
+		return helper.JSON(c, parseError.Error(), http.StatusBadRequest)
 	}
 
-	result, logicError := Logic.Insert(*portal_user)
+	result, status, logicError := Logic.Insert(*portal_user)
 	if logicError != nil {
-		return helper.JSON(c, logicError, true)
+		return helper.JSON(c, logicError, status)
 	}
 
-	return helper.JSON(c, result)
+	return helper.JSON(c, result, status)
 }
 
 func (h *handler) Update(c *fiber.Ctx) error {
@@ -52,17 +54,17 @@ func (h *handler) Update(c *fiber.Ctx) error {
 	var payload JsonData
 	parseError := c.BodyParser(&payload)
 	if parseError != nil {
-		return helper.JSON(c, parseError.Error(), true)
+		return helper.JSON(c, parseError.Error(), http.StatusBadRequest)
 	}
 
 	filter := payload.Filter
 	portal_user := payload.PortalUser
-	result, logicError := Logic.Update(filter, portal_user)
-	if logicError != nil {
-		return helper.JSON(c, logicError, true)
+	result, status, logicError := Logic.Update(filter, portal_user)
+	if len(logicError) > 0 {
+		return helper.JSON(c, logicError, status)
 	}
 
-	return helper.JSON(c, result)
+	return helper.JSON(c, result, status)
 }
 
 func (h *handler) Archive(c *fiber.Ctx) error {

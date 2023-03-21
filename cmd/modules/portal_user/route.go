@@ -14,5 +14,5 @@ func Routes(router fiber.Router) {
 	userGroup.Post("/find", Handler.List)
 	userGroup.Post("/create", Handler.Insert)
 	userGroup.Patch("/update", Handler.Update)
-	userGroup.Get("/archive/:id", Handler.Archive)
+	userGroup.Delete("/archive", Handler.Archive)
 }

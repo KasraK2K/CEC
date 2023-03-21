@@ -1,6 +1,8 @@
 package portal_user
 
 import (
+	"net/http"
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -8,61 +10,68 @@ type logic struct{}
 
 var Logic logic
 
-func (l *logic) List(filter PortalUserFilter) ([]PortalUser, []interface{}) {
+func (l *logic) List(filter PortalUserFilter) ([]PortalUser, int, []interface{}) {
 	var errors []interface{} = nil
 
 	//Validate PortalUser Struct
 	validationError := filter.Validate()
 	if validationError.Errors != nil {
 		errors = append(errors, validationError.Errors)
+		return []PortalUser{}, http.StatusNotAcceptable, errors
 	}
 
-	results, err := Repository.List(filter)
+	results, status, err := Repository.List(filter)
 	if err != nil {
 		errors = append(errors, err.Error())
+		return []PortalUser{}, status, errors
 	}
 
-	return results, errors
+	return results, status, errors
 }
 
-func (l *logic) Insert(portal_user PortalUser) (PortalUser, []interface{}) {
+func (l *logic) Insert(portal_user PortalUser) (PortalUser, int, []interface{}) {
 	var errors []interface{} = nil
 
 	//Validate PortalUser Struct
 	validationError := portal_user.Validate()
 	if validationError.Errors != nil {
 		errors = append(errors, validationError.Errors)
+		return PortalUser{}, http.StatusNotAcceptable, errors
 	}
 
-	result, err := Repository.Insert(portal_user)
+	result, status, err := Repository.Insert(portal_user)
 	if err != nil {
 		errors = append(errors, err.Error())
+		return PortalUser{}, status, errors
 	}
 
-	return result, errors
+	return result, status, errors
 }
 
-func (l *logic) Update(filter PortalUserFilter, portal_user PortalUser) (PortalUser, []interface{}) {
+func (l *logic) Update(filter PortalUserFilter, portal_user PortalUser) (PortalUser, int, []interface{}) {
 	var errors []interface{} = nil
 
 	updatePortalUser := PortalUserUpdate(portal_user)
 	updateValidationError := updatePortalUser.Validate()
 	if updateValidationError.Errors != nil {
 		errors = append(errors, updateValidationError.Errors)
+		return PortalUser{}, http.StatusNotAcceptable, errors
 	}
 
 	//Validate PortalUser Struct
 	filterValidationError := filter.Validate()
 	if filterValidationError.Errors != nil {
 		errors = append(errors, filterValidationError.Errors)
+		return PortalUser{}, http.StatusNotAcceptable, errors
 	}
 
-	result, err := Repository.Update(filter, portal_user)
+	result, status, err := Repository.Update(filter, portal_user)
 	if err != nil {
 		errors = append(errors, err.Error())
+		return PortalUser{}, status, errors
 	}
 
-	return result, errors
+	return result, status, errors
 }
 
 func (l *logic) Archive(c *fiber.Ctx) error {
