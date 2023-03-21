@@ -2,6 +2,7 @@ package helper
 
 import (
 	"encoding/json"
+	"net/http"
 	"testing"
 
 	"github.com/gofiber/fiber/v2"
@@ -61,7 +62,7 @@ func TestJSON(t *testing.T) {
 		app := fiber.New()
 		c := app.AcquireCtx(&fasthttp.RequestCtx{})
 
-		err := JSON(c, mockData)
+		err := JSON(c, mockData, http.StatusOK)
 		if err != nil {
 			t.Errorf("error on JSON command: %v", err)
 		}
@@ -78,7 +79,7 @@ func TestJSON(t *testing.T) {
 		app := fiber.New()
 		c := app.AcquireCtx(&fasthttp.RequestCtx{})
 
-		err := JSON(c, mockData)
+		err := JSON(c, mockData, http.StatusInternalServerError)
 		if err == nil {
 			t.Errorf("The error is nil but we expected to be something")
 		}

@@ -17,12 +17,13 @@ func Marshal(v interface{}) ([]byte, error) {
 	}
 }
 
-func JSON(c *fiber.Ctx, data interface{}, errors ...bool) error {
-	metadata := AddMetaData(data, errors...)
+func JSON(c *fiber.Ctx, data interface{}, status int) error {
+	metadata := AddMetaData(data, status)
 	byteData, err := Marshal(metadata)
 	if err != nil {
 		log.Panic(err)
 	}
 
+	c.Status(status)
 	return c.SendString(string(byteData))
 }
