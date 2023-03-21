@@ -12,7 +12,7 @@ type metaData struct {
 	ERRORS           interface{} `json:"errors" bson:"errors"`
 }
 
-func AddMetaData(data interface{}, errors ...bool) *metaData {
+func AddMetaData(data interface{}, status int) *metaData {
 	metadata := metaData{
 		BACKEND_VERSION:  config.AppConfig.BACKEND_VERSION,
 		FRONTEND_VERSION: config.AppConfig.FRONTEND_VERSION,
@@ -20,7 +20,7 @@ func AddMetaData(data interface{}, errors ...bool) *metaData {
 		MODE:             config.AppConfig.MODE,
 	}
 
-	if len(errors) > 0 && errors[0] {
+	if status >= 400 {
 		metadata.SUCCESS = false
 		metadata.ERRORS = data
 	} else {
