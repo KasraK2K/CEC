@@ -85,3 +85,22 @@ func (h *handler) Archive(c *fiber.Ctx) error {
 
 	return helper.JSON(c, result, status)
 }
+
+func (h *handler) Restore(c *fiber.Ctx) error {
+	type JsonData struct {
+		Filter PortalUserFilter `json:"filter"`
+	}
+	var payload JsonData
+	parseError := c.BodyParser(&payload)
+	if parseError != nil {
+		return helper.JSON(c, parseError.Error(), http.StatusBadRequest)
+	}
+
+	filter := payload.Filter
+	result, status, logicError := Logic.Restore(filter)
+	if logicError != nil {
+		return helper.JSON(c, logicError, status)
+	}
+
+	return helper.JSON(c, result, status)
+}

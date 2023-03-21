@@ -90,3 +90,22 @@ func (l *logic) Archive(filter PortalUserFilter) (PortalUserFilter, int, []inter
 
 	return result, status, errors
 }
+
+func (l *logic) Restore(filter PortalUserFilter) (PortalUserFilter, int, []interface{}) {
+	var errors []interface{} = nil
+
+	// Validate PortalUserFilter Struct
+	validationError := filter.Validate()
+	if validationError.Errors != nil {
+		errors = append(errors, validationError.Errors)
+		return PortalUserFilter{}, http.StatusNotAcceptable, errors
+	}
+
+	result, status, err := Repository.Restore(filter)
+	if err != nil {
+		errors = append(errors, err.Error())
+		return PortalUserFilter{}, status, errors
+	}
+
+	return result, status, errors
+}
