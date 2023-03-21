@@ -18,7 +18,7 @@ func (l *logic) List(filter PortalUserFilter) ([]PortalUser, int, []interface{})
 		return []PortalUser{}, http.StatusNotAcceptable, errors
 	}
 
-	results, status, err := Repository.List(filter)
+	results, status, err := Repository.List(filter, []string{"password"}...)
 	if err != nil {
 		errors = append(errors, err.Error())
 		return []PortalUser{}, status, errors
@@ -110,6 +110,19 @@ func (l *logic) Restore(filter PortalUserFilter) (PortalUserFilter, int, []inter
 	return result, status, errors
 }
 
-// func (l *logic) Login(email, password string) {
+// func (l *logic) Login(email, password string) (string, int, error) {
+// 	filter := PortalUserFilter{Email: email}
+// 	results, status, err := Repository.List(filter)
+// 	if err != nil {
+// 		return "", status, err
+// 	}
 
+// 	if len(results) == 0 {
+// 		return "", http.StatusNotFound, errors.New("email or password is wrong")
+// 	}
+
+// 	// compare password and hashed password in database
+// 	var jwtKey = []byte("my_secret_key")
+
+// 	return "", http.StatusOK, nil
 // }
