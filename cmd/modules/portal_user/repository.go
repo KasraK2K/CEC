@@ -14,10 +14,10 @@ type repository struct{}
 
 var Repository repository
 
-func (r *repository) List(filter PortalUserFilter) ([]PortalUser, int, error) {
+func (r *repository) List(filter PortalUserFilter, omits ...string) ([]PortalUser, int, error) {
 	var portalUsers []PortalUser
 
-	result := pg.Conn.DB.Omit("password").Model(&PortalUser{}).Find(&portalUsers, filter)
+	result := pg.Conn.DB.Omit(omits...).Model(&PortalUser{}).Find(&portalUsers, filter)
 	if result.Error != nil {
 		return []PortalUser{}, http.StatusInternalServerError, result.Error
 	}
