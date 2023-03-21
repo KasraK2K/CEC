@@ -2,9 +2,11 @@ package portal_user
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
+	"time"
 
-	"gorm.io/gorm/clause"
+	"gorm.io/gorm"
 
 	"app/pkg/storage/pg"
 )
@@ -30,7 +32,7 @@ func (r *repository) Insert(portal_user PortalUser) (PortalUser, int, error) {
 	return portal_user, http.StatusOK, nil
 }
 
-func (r *repository) Update(filter interface{}, portal_user PortalUser) (PortalUser, int, error) {
+func (r *repository) Update(filter PortalUserFilter, portal_user PortalUser) (PortalUser, int, error) {
 	result := pg.Conn.DB.Model(&PortalUser{}).Where(filter).Updates(&portal_user).Scan(&portal_user)
 	if result.Error != nil {
 		return PortalUser{}, http.StatusInternalServerError, result.Error
@@ -43,13 +45,18 @@ func (r *repository) Update(filter interface{}, portal_user PortalUser) (PortalU
 	return portal_user, http.StatusOK, nil
 }
 
-func (r *repository) Archive(filter interface{}) (PortalUser, int, error) {
-	var portal_user PortalUser
-	result := pg.Conn.DB.Clauses(clause.Returning{}).Order("created_at desc").Take(&portal_user, filter).Delete(&portal_user)
-
-	if result.Error != nil {
-		return portal_user, http.StatusInternalServerError, result.Error
+func (r *repository) Archive(filter PortalUserFilter) (PortalUserFilter, int, error) {
+	update := PortalUser{
+		IsArchive: true,
+		ArchiveAt: gorm.DeletedAt{Time: time.Now(), Valid: true},
 	}
 
-	return portal_user, http.StatusOK, nil
+	result := pg.Conn.DB.Model(&PortalUser{}).Where(filter).Updates(&update).Scan(&update)
+	if result.Error != nil {
+		return PortalUserFilter{}, http.StatusInternalServerError, result.Error
+	}
+
+	fmt.Printf("result.RowsAffected: %v", result.RowsAffected)
+
+	return filter, http.StatusOK, nil
 }
