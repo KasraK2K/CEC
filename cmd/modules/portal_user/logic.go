@@ -109,3 +109,7 @@ func (l *logic) Restore(filter PortalUserFilter) (PortalUserFilter, int, []inter
 
 	return result, status, errors
 }
+
+// func (l *logic) Login(email, password string) {
+
+// }

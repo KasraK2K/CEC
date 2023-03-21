@@ -28,6 +28,13 @@ func (h *handler) List(c *fiber.Ctx) error {
 		return helper.JSON(c, logicError, status)
 	}
 
+	// // Omit
+	// var omittedResults []PortalUserResponse
+	// err := mapstructure.Decode(results, &omittedResults)
+	// if err != nil {
+	// 	return helper.JSON(c, err, http.StatusInternalServerError)
+	// }
+
 	return helper.JSON(c, results, status)
 }
 
