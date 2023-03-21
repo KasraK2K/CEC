@@ -1,9 +1,9 @@
 package helper
 
 import (
-	"encoding/json"
 	"log"
 
+	"github.com/goccy/go-json"
 	"github.com/gofiber/fiber/v2"
 
 	"app/pkg/config"
