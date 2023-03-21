@@ -23,6 +23,7 @@ type config struct {
 	DB_TIMEZONE      string `json:"db_timezone"`
 	DB_SSL_MODE      string `json:"db_ssl_mode"`
 	MONGODB_URI      string `json:"mongodb_uri"`
+	JWT_SIGNING_KEY  string `json:"jwt_signing_key"`
 }
 
 var AppConfig config
@@ -55,4 +56,6 @@ func SetConfig() {
 	AppConfig.DB_SSL_MODE = os.Getenv("DB_SSL_MODE")
 	// MongoDB Database
 	AppConfig.MONGODB_URI = os.Getenv("MONGODB_URI")
+	// JWT
+	AppConfig.JWT_SIGNING_KEY = os.Getenv("JWT_SIGNING_KEY")
 }
