@@ -1,6 +1,7 @@
 package portal_user
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/mitchellh/mapstructure"
@@ -13,160 +14,89 @@ type logic struct{}
 
 var Logic logic
 
-func (l *logic) List(filter PortalUserFilter) ([]PortalUser, common.Status, []interface{}) {
-	var errors []interface{} = nil
-
-	// Validate PortalUserFilter Struct
-	validationError := helper.Validator(filter)
-	if validationError.Errors != nil {
-		errors = append(errors, validationError.Errors)
-		return []PortalUser{}, http.StatusNotAcceptable, errors
-	}
-
+func (l *logic) List(filter PortalUserFilter) ([]PortalUser, common.Status, error) {
 	results, status, err := Repository.List(filter, []string{"password"}...)
 	if err != nil {
-		errors = append(errors, err.Error())
-		return []PortalUser{}, status, errors
+		return []PortalUser{}, status, err
 	}
 
-	return results, status, errors
+	return results, status, nil
 }
 
-func (l *logic) Insert(portalUser PortalUser) (PortalUser, common.Status, []interface{}) {
-	var errors []interface{} = nil
-
-	//Validate PortalUser Struct
-	validationError := helper.Validator(portalUser)
-	if validationError.Errors != nil {
-		errors = append(errors, validationError.Errors)
-		return PortalUser{}, http.StatusNotAcceptable, errors
-	}
-
+func (l *logic) Insert(portalUser PortalUser) (PortalUser, common.Status, error) {
 	// Hash password
 	if len(portalUser.Password) > 0 {
 		hash, err := helper.HashPassword(portalUser.Password)
 		if err != nil {
-			errors = append(errors, err.Error())
-			return PortalUser{}, http.StatusInternalServerError, errors
+			return PortalUser{}, http.StatusInternalServerError, err
 		}
 		portalUser.Password = hash
 	}
 
 	result, status, err := Repository.Insert(portalUser)
 	if err != nil {
-		errors = append(errors, err.Error())
-		return PortalUser{}, status, errors
+		return PortalUser{}, status, err
 	}
 
-	return result, status, errors
+	return result, status, nil
 }
 
-func (l *logic) Update(filter PortalUserFilter, portalUser PortalUser) (PortalUser, common.Status, []interface{}) {
-	var errors []interface{} = nil
-
+func (l *logic) Update(filter PortalUserFilter, portalUser PortalUser) (PortalUser, common.Status, error) {
 	var portalUserUpdate PortalUserUpdate
 	err := mapstructure.Decode(portalUser, &portalUserUpdate)
 	if err != nil {
-		errors = append(errors, err.Error())
-		return PortalUser{}, http.StatusInternalServerError, errors
-	}
-
-	updateValidationError := helper.Validator(portalUserUpdate)
-	if updateValidationError.Errors != nil {
-		errors = append(errors, updateValidationError.Errors)
-		return PortalUser{}, http.StatusNotAcceptable, errors
-	}
-
-	//Validate PortalUser Struct
-	filterValidationError := helper.Validator(filter)
-	if filterValidationError.Errors != nil {
-		errors = append(errors, filterValidationError.Errors)
-		return PortalUser{}, http.StatusNotAcceptable, errors
+		return PortalUser{}, http.StatusInternalServerError, err
 	}
 
 	// Hash password
 	if len(portalUser.Password) > 0 {
 		hash, err := helper.HashPassword(portalUser.Password)
 		if err != nil {
-			errors = append(errors, err.Error())
-			return PortalUser{}, http.StatusInternalServerError, errors
+			return PortalUser{}, http.StatusInternalServerError, err
 		}
 		portalUser.Password = hash
 	}
 
 	result, status, err := Repository.Update(filter, portalUser)
 	if err != nil {
-		errors = append(errors, err.Error())
-		return PortalUser{}, status, errors
+		return PortalUser{}, status, err
 	}
 
-	return result, status, errors
+	return result, status, nil
 }
 
-func (l *logic) Archive(filter PortalUserFilter) (PortalUserFilter, common.Status, []interface{}) {
-	var errors []interface{} = nil
-
-	// Validate PortalUserFilter Struct
-	validationError := helper.Validator(filter)
-	if validationError.Errors != nil {
-		errors = append(errors, validationError.Errors)
-		return PortalUserFilter{}, http.StatusNotAcceptable, errors
-	}
-
+func (l *logic) Archive(filter PortalUserFilter) (PortalUserFilter, common.Status, error) {
 	result, status, err := Repository.Archive(filter)
 	if err != nil {
-		errors = append(errors, err.Error())
-		return PortalUserFilter{}, status, errors
+		return PortalUserFilter{}, status, err
 	}
 
-	return result, status, errors
+	return result, status, nil
 }
 
-func (l *logic) Restore(filter PortalUserFilter) (PortalUserFilter, common.Status, []interface{}) {
-	var errors []interface{} = nil
-
-	// Validate PortalUserFilter Struct
-	validationError := helper.Validator(filter)
-	if validationError.Errors != nil {
-		errors = append(errors, validationError.Errors)
-		return PortalUserFilter{}, http.StatusNotAcceptable, errors
-	}
-
+func (l *logic) Restore(filter PortalUserFilter) (PortalUserFilter, common.Status, error) {
 	result, status, err := Repository.Restore(filter)
 	if err != nil {
-		errors = append(errors, err.Error())
-		return PortalUserFilter{}, status, errors
+		return PortalUserFilter{}, status, err
 	}
 
-	return result, status, errors
+	return result, status, nil
 }
 
-func (l *logic) Login(payload PortalUserLoginPayload) (string, common.Status, []interface{}) {
-	var errors []interface{} = nil
-
-	// Validate LoginPayload Struct
-	validationError := helper.Validator(payload)
-	if validationError.Errors != nil {
-		errors = append(errors, validationError.Errors)
-		return "", http.StatusNotAcceptable, errors
-	}
-
+func (l *logic) Login(payload PortalUserLoginPayload) (string, common.Status, error) {
 	filter := PortalUserFilter{Email: payload.Email}
 	results, status, err := Repository.List(filter)
 	if err != nil {
-		errors = append(errors, err.Error())
-		return "", status, errors
+		return "", status, err
 	}
 
 	if len(results) == 0 {
-		errors = append(errors, "email or password is wrong")
-		return "", http.StatusNotFound, errors
+		return "", http.StatusNotFound, errors.New("email or password is wrong")
 	}
 
 	portalUser := results[0]
 	if !helper.ComparePassword(portalUser.Password, payload.Password) {
-		errors = append(errors, "email or password is wrong")
-		return "", http.StatusNotFound, errors
+		return "", http.StatusNotFound, errors.New("email or password is wrong")
 	}
 
 	payloadClaims := helper.PayloadClaims{
@@ -177,8 +107,7 @@ func (l *logic) Login(payload PortalUserLoginPayload) (string, common.Status, []
 	}
 	token, err := helper.Token.CreateToken(payloadClaims)
 	if err != nil {
-		errors = append(errors, err.Error())
-		return "", http.StatusInternalServerError, errors
+		return "", http.StatusInternalServerError, err
 	}
 
 	return token, http.StatusOK, nil
