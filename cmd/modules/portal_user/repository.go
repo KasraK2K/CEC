@@ -26,18 +26,18 @@ func (r *repository) List(filter PortalUserFilter, omits ...string) ([]PortalUse
 	return portalUsers, http.StatusOK, nil
 }
 
-func (r *repository) Insert(portal_user PortalUser) (PortalUser, common.Status, error) {
-	result := pg.Conn.DB.Model(&PortalUser{}).Create(&portal_user)
+func (r *repository) Insert(portalUser PortalUser) (PortalUser, common.Status, error) {
+	result := pg.Conn.DB.Model(&PortalUser{}).Create(&portalUser)
 	if result.Error != nil {
 		return PortalUser{}, http.StatusInternalServerError, result.Error
 	}
 
-	portal_user.Password = ""
-	return portal_user, http.StatusOK, nil
+	portalUser.Password = ""
+	return portalUser, http.StatusOK, nil
 }
 
-func (r *repository) Update(filter PortalUserFilter, portal_user PortalUser) (PortalUser, common.Status, error) {
-	result := pg.Conn.DB.Model(&PortalUser{}).Where(filter).Updates(&portal_user).Scan(&portal_user)
+func (r *repository) Update(filter PortalUserFilter, portalUser PortalUser) (PortalUser, common.Status, error) {
+	result := pg.Conn.DB.Model(&PortalUser{}).Where(filter).Updates(&portalUser).Scan(&portalUser)
 	if result.Error != nil {
 		return PortalUser{}, http.StatusInternalServerError, result.Error
 	}
@@ -46,8 +46,8 @@ func (r *repository) Update(filter PortalUserFilter, portal_user PortalUser) (Po
 		return PortalUser{}, http.StatusNotFound, errors.New("can't find any user with this filter")
 	}
 
-	portal_user.Password = ""
-	return portal_user, http.StatusOK, nil
+	portalUser.Password = ""
+	return portalUser, http.StatusOK, nil
 }
 
 func (r *repository) Archive(filter PortalUserFilter) (PortalUserFilter, common.Status, error) {

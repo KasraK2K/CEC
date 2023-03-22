@@ -3,6 +3,8 @@ package portal_user
 import (
 	"net/http"
 
+	"github.com/mitchellh/mapstructure"
+
 	"app/cmd/common"
 	"app/pkg/helper"
 )
@@ -30,27 +32,27 @@ func (l *logic) List(filter PortalUserFilter) ([]PortalUser, common.Status, []in
 	return results, status, errors
 }
 
-func (l *logic) Insert(portal_user PortalUser) (PortalUser, common.Status, []interface{}) {
+func (l *logic) Insert(portalUser PortalUser) (PortalUser, common.Status, []interface{}) {
 	var errors []interface{} = nil
 
 	//Validate PortalUser Struct
-	validationError := portal_user.Validate()
+	validationError := portalUser.Validate()
 	if validationError.Errors != nil {
 		errors = append(errors, validationError.Errors)
 		return PortalUser{}, http.StatusNotAcceptable, errors
 	}
 
 	// Hash password
-	if len(portal_user.Password) > 0 {
-		hash, err := helper.HashPassword(portal_user.Password)
+	if len(portalUser.Password) > 0 {
+		hash, err := helper.HashPassword(portalUser.Password)
 		if err != nil {
 			errors = append(errors, err.Error())
 			return PortalUser{}, http.StatusInternalServerError, errors
 		}
-		portal_user.Password = hash
+		portalUser.Password = hash
 	}
 
-	result, status, err := Repository.Insert(portal_user)
+	result, status, err := Repository.Insert(portalUser)
 	if err != nil {
 		errors = append(errors, err.Error())
 		return PortalUser{}, status, errors
@@ -59,11 +61,17 @@ func (l *logic) Insert(portal_user PortalUser) (PortalUser, common.Status, []int
 	return result, status, errors
 }
 
-func (l *logic) Update(filter PortalUserFilter, portal_user PortalUser) (PortalUser, common.Status, []interface{}) {
+func (l *logic) Update(filter PortalUserFilter, portalUser PortalUser) (PortalUser, common.Status, []interface{}) {
 	var errors []interface{} = nil
 
-	updatePortalUser := PortalUserUpdate(portal_user)
-	updateValidationError := updatePortalUser.Validate()
+	var portalUserUpdate PortalUserUpdate
+	err := mapstructure.Decode(portalUser, &portalUserUpdate)
+	if err != nil {
+		errors = append(errors, err.Error())
+		return PortalUser{}, http.StatusInternalServerError, errors
+	}
+
+	updateValidationError := portalUserUpdate.Validate()
 	if updateValidationError.Errors != nil {
 		errors = append(errors, updateValidationError.Errors)
 		return PortalUser{}, http.StatusNotAcceptable, errors
@@ -77,16 +85,16 @@ func (l *logic) Update(filter PortalUserFilter, portal_user PortalUser) (PortalU
 	}
 
 	// Hash password
-	if len(portal_user.Password) > 0 {
-		hash, err := helper.HashPassword(portal_user.Password)
+	if len(portalUser.Password) > 0 {
+		hash, err := helper.HashPassword(portalUser.Password)
 		if err != nil {
 			errors = append(errors, err.Error())
 			return PortalUser{}, http.StatusInternalServerError, errors
 		}
-		portal_user.Password = hash
+		portalUser.Password = hash
 	}
 
-	result, status, err := Repository.Update(filter, portal_user)
+	result, status, err := Repository.Update(filter, portalUser)
 	if err != nil {
 		errors = append(errors, err.Error())
 		return PortalUser{}, status, errors

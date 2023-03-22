@@ -26,19 +26,19 @@ type UserType struct {
 }
 
 type PayloadClaims struct {
-	ID       uint64 `json:"id" bson:"id"`
-	RoleID   int    `json:"role_id" bson:"role_id"`
-	Platform uint8  `json:"platform" bson:"platform"`
-	UserType uint8  `json:"user_type" bson:"user_type"`
+	ID       uint  `json:"id" bson:"id"`
+	RoleID   int   `json:"role_id" bson:"role_id"`
+	Platform uint8 `json:"platform" bson:"platform"`
+	UserType uint8 `json:"user_type" bson:"user_type"`
 	jwt.RegisteredClaims
 }
 
 type Payload struct {
-	ID        uint64 `json:"id" bson:"id"`
-	RoleID    int    `json:"role_id" bson:"role_id"`
-	Platform  uint8  `json:"platform" bson:"platform"`
-	UserType  uint8  `json:"user_type" bson:"user_type"`
-	ExpiresAt int64  `json:"exp" bson:"exp"`
+	ID        uint  `json:"id" bson:"id"`
+	RoleID    int   `json:"role_id" bson:"role_id"`
+	Platform  uint8 `json:"platform" bson:"platform"`
+	UserType  uint8 `json:"user_type" bson:"user_type"`
+	ExpiresAt int64 `json:"exp" bson:"exp"`
 }
 
 var platform = Platform{
@@ -131,11 +131,11 @@ func (t *token) ParseToken(tokenString string) (*Payload, error) {
 		ExpiresAt: claims.ExpiresAt.Time.Unix(),
 	}
 
-	id, err := strconv.ParseUint(claims.Subject, 10, 32)
-	if err != nil {
-		return nil, err
-	}
-	payload.ID = id
+	// id, err := strconv.ParseUint(claims.Subject, 10, 32)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	payload.ID = claims.ID
 	payload.RoleID = claims.RoleID
 	payload.Platform = claims.Platform
 	payload.UserType = claims.UserType

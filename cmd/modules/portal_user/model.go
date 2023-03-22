@@ -9,7 +9,8 @@ import (
 )
 
 type PortalUser struct {
-	ID            uint64         `json:"id"                 bson:"id"                 gorm:"type:uint64;primaryKey;<-:false"`
+	gorm.Model
+	ID            uint           `json:"id"                 bson:"id"                 gorm:"type:uint;primaryKey;<-:false"`
 	Email         string         `json:"email"              bson:"email"              gorm:"type:string;unique;not null;"                        validate:"required,email,min=6,max=32"`
 	Password      string         `json:"password,omitempty" bson:"password,omitempty" gorm:"type:string;check:length(password) >= 8"             validate:"required,min=8,max=32"`
 	ContactNumber string         `json:"contact_number"     bson:"contact_number"     gorm:"type:string;"`
@@ -24,12 +25,12 @@ type PortalUser struct {
 	ArchiveAt     gorm.DeletedAt `json:"archive_at"         bson:"archive_at"         gorm:"type:timestamptz;index"`
 }
 
-func (portal_user *PortalUser) Validate() helper.ErrorResponse {
-	return helper.Validator(portal_user)
+func (portalUser *PortalUser) Validate() helper.ErrorResponse {
+	return helper.Validator(portalUser)
 }
 
 type PortalUserFilter struct {
-	ID        uint64 `json:"id,omitempty"         bson:"id,omitempty"`
+	ID        uint   `json:"id,omitempty"         bson:"id,omitempty"`
 	Email     string `json:"email,omitempty"      bson:"email,omitempty"`
 	Gender    uint8  `json:"gender,omitempty"     bson:"gender,omitempty"`
 	IsActive  bool   `json:"is_active,omitempty"  bson:"is_active,omitempty"`
@@ -42,19 +43,17 @@ func (filter *PortalUserFilter) Validate() helper.ErrorResponse {
 }
 
 type PortalUserUpdate struct {
-	ID            uint64         `json:"id"             bson:"id"`
-	Email         string         `json:"email"          bson:"email"`
-	Password      string         `json:"password"       bson:"password"`
-	ContactNumber string         `json:"contact_number" bson:"contact_number"`
-	FirstName     string         `json:"first_name"     bson:"first_name"`
-	Surname       string         `json:"surname"        bson:"surname"`
-	Gender        uint8          `json:"gender"         bson:"gender"`
-	IsActive      bool           `json:"is_active"      bson:"is_active"`
-	IsAdmin       bool           `json:"is_admin"       bson:"is_admin"`
-	IsArchive     bool           `json:"is_archive"     bson:"is_archive"`
-	CreatedAt     time.Time      `json:"created_at"     bson:"created_at"`
-	UpdatedAt     time.Time      `json:"updated_at"     bson:"updated_at"`
-	ArchiveAt     gorm.DeletedAt `json:"archive_at"     bson:"archive_at"`
+	gorm.Model
+	ID            uint   `json:"id"             bson:"id"`
+	Email         string `json:"email"          bson:"email"`
+	Password      string `json:"password"       bson:"password"`
+	ContactNumber string `json:"contact_number" bson:"contact_number"`
+	FirstName     string `json:"first_name"     bson:"first_name"`
+	Surname       string `json:"surname"        bson:"surname"`
+	Gender        uint8  `json:"gender"         bson:"gender"`
+	IsActive      bool   `json:"is_active"      bson:"is_active"`
+	IsAdmin       bool   `json:"is_admin"       bson:"is_admin"`
+	IsArchive     bool   `json:"is_archive"     bson:"is_archive"`
 }
 
 func (update *PortalUserUpdate) Validate() helper.ErrorResponse {

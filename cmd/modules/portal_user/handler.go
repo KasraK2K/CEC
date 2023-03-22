@@ -63,8 +63,8 @@ func (h *handler) Update(c *fiber.Ctx) error {
 	}
 
 	filter := payload.Filter
-	portal_user := payload.Data
-	result, status, logicError := Logic.Update(filter, portal_user)
+	portalUser := payload.Data
+	result, status, logicError := Logic.Update(filter, portalUser)
 	if len(logicError) > 0 {
 		return helper.JSON(c, logicError, status)
 	}
