@@ -7,7 +7,6 @@ import (
 )
 
 type PortalUser struct {
-	gorm.Model
 	ID            uint           `json:"id"                 bson:"id"                 gorm:"type:uint;primaryKey;<-:false"`
 	Email         string         `json:"email"              bson:"email"              gorm:"type:string;unique;not null;"                        validate:"required,email,min=6,max=32"`
 	Password      string         `json:"password,omitempty" bson:"password,omitempty" gorm:"type:string;check:length(password) >= 8"             validate:"required,min=8,max=32"`
@@ -33,7 +32,6 @@ type PortalUserFilter struct {
 }
 
 type PortalUserUpdate struct {
-	gorm.Model
 	ID            uint   `json:"id"             bson:"id"`
 	Email         string `json:"email"          bson:"email"`
 	Password      string `json:"password"       bson:"password"`
