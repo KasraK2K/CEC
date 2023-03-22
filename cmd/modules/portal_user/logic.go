@@ -2,6 +2,8 @@ package portal_user
 
 import (
 	"net/http"
+
+	"app/pkg/helper"
 )
 
 type logic struct{}
@@ -37,6 +39,16 @@ func (l *logic) Insert(portal_user PortalUser) (PortalUser, int, []interface{}) 
 		return PortalUser{}, http.StatusNotAcceptable, errors
 	}
 
+	// Hash password
+	if len(portal_user.Password) > 0 {
+		hash, err := helper.HashPassword(portal_user.Password)
+		if err != nil {
+			errors = append(errors, err.Error())
+			return PortalUser{}, http.StatusInternalServerError, errors
+		}
+		portal_user.Password = hash
+	}
+
 	result, status, err := Repository.Insert(portal_user)
 	if err != nil {
 		errors = append(errors, err.Error())
@@ -61,6 +73,16 @@ func (l *logic) Update(filter PortalUserFilter, portal_user PortalUser) (PortalU
 	if filterValidationError.Errors != nil {
 		errors = append(errors, filterValidationError.Errors)
 		return PortalUser{}, http.StatusNotAcceptable, errors
+	}
+
+	// Hash password
+	if len(portal_user.Password) > 0 {
+		hash, err := helper.HashPassword(portal_user.Password)
+		if err != nil {
+			errors = append(errors, err.Error())
+			return PortalUser{}, http.StatusInternalServerError, errors
+		}
+		portal_user.Password = hash
 	}
 
 	result, status, err := Repository.Update(filter, portal_user)
@@ -110,19 +132,36 @@ func (l *logic) Restore(filter PortalUserFilter) (PortalUserFilter, int, []inter
 	return result, status, errors
 }
 
-// func (l *logic) Login(email, password string) (string, int, error) {
-// 	filter := PortalUserFilter{Email: email}
-// 	results, status, err := Repository.List(filter)
-// 	if err != nil {
-// 		return "", status, err
-// 	}
+func (l *logic) Login(email, password string) (string, int, []interface{}) {
+	var errors []interface{} = nil
 
-// 	if len(results) == 0 {
-// 		return "", http.StatusNotFound, errors.New("email or password is wrong")
-// 	}
+	filter := PortalUserFilter{Email: email}
+	results, status, err := Repository.List(filter)
+	if err != nil {
+		errors = append(errors, err.Error())
+		return "", status, errors
+	}
 
-// 	// compare password and hashed password in database
-// 	var jwtKey = []byte("my_secret_key")
+	if len(results) == 0 {
+		errors = append(errors, "email or password is wrong")
+		return "", http.StatusNotFound, errors
+	}
 
-// 	return "", http.StatusOK, nil
-// }
+	portal_user := results[0]
+	if !helper.ComparePassword(portal_user.Password, password) {
+		errors = append(errors, "email or password is wrong")
+		return "", http.StatusNotFound, errors
+	}
+
+	payloadClaims := helper.PayloadClaims{
+		ID:     portal_user.ID,
+		RoleID: 1,
+	}
+	token, err := helper.CreateToken(payloadClaims)
+	if err != nil {
+		errors = append(errors, err.Error())
+		return "", http.StatusInternalServerError, errors
+	}
+
+	return token, http.StatusOK, nil
+}

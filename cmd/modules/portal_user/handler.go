@@ -28,13 +28,6 @@ func (h *handler) List(c *fiber.Ctx) error {
 		return helper.JSON(c, logicError, status)
 	}
 
-	// // Omit
-	// var omittedResults []PortalUserResponse
-	// err := mapstructure.Decode(results, &omittedResults)
-	// if err != nil {
-	// 	return helper.JSON(c, err, http.StatusInternalServerError)
-	// }
-
 	return helper.JSON(c, results, status)
 }
 
@@ -110,4 +103,27 @@ func (h *handler) Restore(c *fiber.Ctx) error {
 	}
 
 	return helper.JSON(c, result, status)
+}
+
+func (h *handler) Login(c *fiber.Ctx) error {
+	type loginPayload struct {
+		Email    string `json:"email" bson:"email"`
+		Password string `json:"password" bson:"password"`
+	}
+	type JsonData struct {
+		Filter loginPayload `json:"filter"`
+	}
+	var payload JsonData
+	parseError := c.BodyParser(&payload)
+	if parseError != nil {
+		return helper.JSON(c, parseError.Error(), http.StatusBadRequest)
+	}
+
+	filter := payload.Filter
+	results, status, logicError := Logic.Login(filter.Email, filter.Password)
+	if logicError != nil {
+		return helper.JSON(c, logicError, status)
+	}
+
+	return helper.JSON(c, results, status)
 }
