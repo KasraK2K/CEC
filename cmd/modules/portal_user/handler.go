@@ -111,7 +111,7 @@ func (h *handler) Login(c *fiber.Ctx) error {
 		Password string `json:"password" bson:"password"`
 	}
 	type JsonData struct {
-		Filter loginPayload `json:"filter"`
+		Data loginPayload `json:"data"`
 	}
 	var payload JsonData
 	parseError := c.BodyParser(&payload)
@@ -119,11 +119,15 @@ func (h *handler) Login(c *fiber.Ctx) error {
 		return helper.JSON(c, parseError.Error(), http.StatusBadRequest)
 	}
 
-	filter := payload.Filter
-	results, status, logicError := Logic.Login(filter.Email, filter.Password)
+	data := payload.Data
+	results, status, logicError := Logic.Login(data.Email, data.Password)
 	if logicError != nil {
 		return helper.JSON(c, logicError, status)
 	}
 
 	return helper.JSON(c, results, status)
 }
+
+// Forgot
+
+// Reset
