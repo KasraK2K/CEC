@@ -29,7 +29,7 @@ func (portal_user *PortalUser) Validate() helper.ErrorResponse {
 }
 
 type PortalUserFilter struct {
-	ID        uint8  `json:"id,omitempty"         bson:"id,omitempty"`
+	ID        uint64 `json:"id,omitempty"         bson:"id,omitempty"`
 	Email     string `json:"email,omitempty"      bson:"email,omitempty"`
 	Gender    uint8  `json:"gender,omitempty"     bson:"gender,omitempty"`
 	IsActive  bool   `json:"is_active,omitempty"  bson:"is_active,omitempty"`
