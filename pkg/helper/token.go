@@ -10,32 +10,32 @@ import (
 	"app/pkg/config"
 )
 
-type UserClaims struct {
-	ID   uint64 `json:"id"`
-	Role string `json:"role"`
+type PayloadClaims struct {
+	ID     uint64 `json:"id"`
+	RoleID int    `json:"role_id"`
 	jwt.RegisteredClaims
 }
 
 type Payload struct {
 	ID        uint64 `json:"id"`
-	Role      string `json:"role"`
+	RoleID    int    `json:"role_id"`
 	ExpiresAt int64  `json:"exp"`
 }
 
 /* -------------------------------------------------------------------------- */
 /*                                Create Token                                */
 /* -------------------------------------------------------------------------- */
-// userClaims := helper.UserClaims{
+// payloadClaims := helper.PayloadClaims{
 // 	ID:   1,
 // 	Role: "admin",
 // }
-// token, err := helper.CreateToken(userClaims)
+// token, err := helper.CreateToken(payloadClaims)
 // if err != nil {
 // 	fmt.Println("t error:", err)
 // }
 // fmt.Println("token:", token)
 /* -------------------------------------------------------------------------- */
-func CreateToken(userClaims UserClaims) (string, error) {
+func CreateToken(payloadClaims PayloadClaims) (string, error) {
 	// Set the expiration time for the token
 	expiresIn := time.Hour * 24
 	expirationTime := time.Now().Add(expiresIn).Unix()
@@ -44,13 +44,13 @@ func CreateToken(userClaims UserClaims) (string, error) {
 	expTime := time.Unix(expirationTime, 0)
 
 	// Set the claims for the token
-	claims := &UserClaims{
-		ID:   userClaims.ID,
-		Role: userClaims.Role,
+	claims := &PayloadClaims{
+		ID:     payloadClaims.ID,
+		RoleID: payloadClaims.RoleID,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expTime),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
-			Subject:   strconv.Itoa(int(userClaims.ID)),
+			Subject:   strconv.Itoa(int(payloadClaims.ID)),
 		},
 	}
 
@@ -78,7 +78,7 @@ func CreateToken(userClaims UserClaims) (string, error) {
 // fmt.Println("time:", time.Unix(payload.ExpiresAt, 0))
 /* -------------------------------------------------------------------------- */
 func ParseToken(tokenString string) (*Payload, error) {
-	token, err := jwt.ParseWithClaims(tokenString, &UserClaims{}, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &PayloadClaims{}, func(token *jwt.Token) (interface{}, error) {
 		signingKey := []byte(config.AppConfig.JWT_SIGNING_KEY)
 		return signingKey, nil
 	})
@@ -86,7 +86,7 @@ func ParseToken(tokenString string) (*Payload, error) {
 		return nil, err
 	}
 
-	claims, ok := token.Claims.(*UserClaims)
+	claims, ok := token.Claims.(*PayloadClaims)
 	if !ok || !token.Valid {
 		return nil, errors.New("invalid token")
 	}
@@ -100,7 +100,7 @@ func ParseToken(tokenString string) (*Payload, error) {
 		return nil, err
 	}
 	payload.ID = uint64(id)
-	payload.Role = claims.Role
+	payload.RoleID = claims.RoleID
 
 	return payload, nil
 }
