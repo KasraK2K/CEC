@@ -132,10 +132,17 @@ func (l *logic) Restore(filter PortalUserFilter) (PortalUserFilter, int, []inter
 	return result, status, errors
 }
 
-func (l *logic) Login(email, password string) (string, int, []interface{}) {
+func (l *logic) Login(payload PortalUserLoginPayload) (string, int, []interface{}) {
 	var errors []interface{} = nil
 
-	filter := PortalUserFilter{Email: email}
+	// Validate LoginPayload Struct
+	validationError := payload.Validate()
+	if validationError.Errors != nil {
+		errors = append(errors, validationError.Errors)
+		return "", http.StatusNotAcceptable, errors
+	}
+
+	filter := PortalUserFilter{Email: payload.Email}
 	results, status, err := Repository.List(filter)
 	if err != nil {
 		errors = append(errors, err.Error())
@@ -147,17 +154,19 @@ func (l *logic) Login(email, password string) (string, int, []interface{}) {
 		return "", http.StatusNotFound, errors
 	}
 
-	portal_user := results[0]
-	if !helper.ComparePassword(portal_user.Password, password) {
+	portalUser := results[0]
+	if !helper.ComparePassword(portalUser.Password, payload.Password) {
 		errors = append(errors, "email or password is wrong")
 		return "", http.StatusNotFound, errors
 	}
 
 	payloadClaims := helper.PayloadClaims{
-		ID:     portal_user.ID,
-		RoleID: 1,
+		ID:       portalUser.ID,
+		RoleID:   1,
+		Platform: uint8(payload.Platform),
+		UserType: helper.Token.UserType.Portal,
 	}
-	token, err := helper.CreateToken(payloadClaims)
+	token, err := helper.Token.CreateToken(payloadClaims)
 	if err != nil {
 		errors = append(errors, err.Error())
 		return "", http.StatusInternalServerError, errors

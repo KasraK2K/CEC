@@ -60,3 +60,13 @@ type PortalUserUpdate struct {
 func (update *PortalUserUpdate) Validate() helper.ErrorResponse {
 	return helper.Validator(update)
 }
+
+type PortalUserLoginPayload struct {
+	Email    string `json:"email"    bson:"email"    validate:"required,email,min=6,max=32"`
+	Password string `json:"password" bson:"password" validate:"required,min=8,max=32"`
+	Platform uint8  `json:"platform" bson:"platform" validate:"required,oneof=1 2"`
+}
+
+func (login *PortalUserLoginPayload) Validate() helper.ErrorResponse {
+	return helper.Validator(login)
+}

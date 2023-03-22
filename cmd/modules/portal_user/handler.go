@@ -106,21 +106,16 @@ func (h *handler) Restore(c *fiber.Ctx) error {
 }
 
 func (h *handler) Login(c *fiber.Ctx) error {
-	type loginPayload struct {
-		Email    string `json:"email" bson:"email"`
-		Password string `json:"password" bson:"password"`
+	type jsonData struct {
+		Data PortalUserLoginPayload `json:"data" validate:"required"`
 	}
-	type JsonData struct {
-		Data loginPayload `json:"data"`
-	}
-	var payload JsonData
+	var payload jsonData
 	parseError := c.BodyParser(&payload)
 	if parseError != nil {
 		return helper.JSON(c, parseError.Error(), http.StatusBadRequest)
 	}
 
-	data := payload.Data
-	results, status, logicError := Logic.Login(data.Email, data.Password)
+	results, status, logicError := Logic.Login(payload.Data)
 	if logicError != nil {
 		return helper.JSON(c, logicError, status)
 	}

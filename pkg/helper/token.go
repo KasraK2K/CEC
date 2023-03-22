@@ -10,20 +10,50 @@ import (
 	"app/pkg/config"
 )
 
+type token struct {
+	Platform Platform `json:"platform" bson:"platform"`
+	UserType UserType `json:"user_type" bson:"user_type"`
+}
+
+type Platform struct {
+	Web uint8 `json:"web" bson:"web"`
+	App uint8 `json:"app" bson:"app"`
+}
+
+type UserType struct {
+	Portal uint8 `json:"portal" bson:"portal"`
+	User   uint8 `json:"user" bson:"user"`
+}
+
 type PayloadClaims struct {
-	ID     uint64 `json:"id"`
-	RoleID int    `json:"role_id"`
-	// Platform int    `json:"platform"` // TODO
-	// Type     int    `json:"type"` // TODO
+	ID       uint64 `json:"id" bson:"id"`
+	RoleID   int    `json:"role_id" bson:"role_id"`
+	Platform uint8  `json:"platform" bson:"platform"`
+	UserType uint8  `json:"user_type" bson:"user_type"`
 	jwt.RegisteredClaims
 }
 
 type Payload struct {
-	ID     uint64 `json:"id"`
-	RoleID int    `json:"role_id"`
-	// Platform int    `json:"platform"` // TODO
-	// Type     int    `json:"type"` // TODO
-	ExpiresAt int64 `json:"exp"`
+	ID        uint64 `json:"id" bson:"id"`
+	RoleID    int    `json:"role_id" bson:"role_id"`
+	Platform  uint8  `json:"platform" bson:"platform"`
+	UserType  uint8  `json:"user_type" bson:"user_type"`
+	ExpiresAt int64  `json:"exp" bson:"exp"`
+}
+
+var platform = Platform{
+	Web: 1,
+	App: 2,
+}
+
+var userType = UserType{
+	Portal: 1,
+	User:   2,
+}
+
+var Token = token{
+	Platform: platform,
+	UserType: userType,
 }
 
 /* -------------------------------------------------------------------------- */
@@ -39,7 +69,7 @@ type Payload struct {
 // }
 // fmt.Println("token:", token)
 /* -------------------------------------------------------------------------- */
-func CreateToken(payloadClaims PayloadClaims) (string, error) {
+func (t *token) CreateToken(payloadClaims PayloadClaims) (string, error) {
 	// Set the expiration time for the token
 	expiresIn := time.Hour * 24
 	expirationTime := time.Now().Add(expiresIn).Unix()
@@ -49,8 +79,10 @@ func CreateToken(payloadClaims PayloadClaims) (string, error) {
 
 	// Set the claims for the token
 	claims := &PayloadClaims{
-		ID:     payloadClaims.ID,
-		RoleID: payloadClaims.RoleID,
+		ID:       payloadClaims.ID,
+		RoleID:   payloadClaims.RoleID,
+		Platform: payloadClaims.Platform,
+		UserType: payloadClaims.UserType,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expTime),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
@@ -81,7 +113,7 @@ func CreateToken(payloadClaims PayloadClaims) (string, error) {
 // fmt.Println("payload:", payload)
 // fmt.Println("time:", time.Unix(payload.ExpiresAt, 0))
 /* -------------------------------------------------------------------------- */
-func ParseToken(tokenString string) (*Payload, error) {
+func (t *token) ParseToken(tokenString string) (*Payload, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &PayloadClaims{}, func(token *jwt.Token) (interface{}, error) {
 		signingKey := []byte(config.AppConfig.JWT_SIGNING_KEY)
 		return signingKey, nil
@@ -103,8 +135,10 @@ func ParseToken(tokenString string) (*Payload, error) {
 	if err != nil {
 		return nil, err
 	}
-	payload.ID = uint64(id)
+	payload.ID = id
 	payload.RoleID = claims.RoleID
+	payload.Platform = claims.Platform
+	payload.UserType = claims.UserType
 
 	return payload, nil
 }
