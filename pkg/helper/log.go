@@ -54,13 +54,13 @@ func (l *logger) Critical(v ...interface{}) {
 
 func (l *logger) Alert(v ...interface{}) {
 	if strings.Contains(config.AppConfig.STDOUT_LOGS, "alert") {
-		l.initLogger("\u001b[37;41mALERT\u001b[0m:     ", v...)
+		l.initLogger("\u001b[30;43mALERT\u001b[0m:     ", v...)
 	}
 }
 
 func (l *logger) Emergency(v ...interface{}) {
 	if strings.Contains(config.AppConfig.STDOUT_LOGS, "emergency") {
-		l.initLogger("\u001b[31;1mEMERGENCY\u001b[0m: ", v...)
+		l.initLogger("\u001b[37;41mEMERGENCY\u001b[0m: ", v...)
 	}
 }
 
@@ -125,9 +125,9 @@ func (l *logger) folderExistence() {
 }
 
 func (l *logger) initLogger(prefix string, v ...interface{}) {
-	flags := log.Ldate | log.Ltime
-	errorLogger := log.New(os.Stdout, prefix, flags)
-	errorLogger.Println(v...)
+	flags := log.Ltime
+	stdoutLogger := log.New(os.Stdout, prefix, flags)
+	stdoutLogger.Println(v...)
 }
 
 func (l *logger) initFileLogger(fileName string, v ...interface{}) {
@@ -135,7 +135,7 @@ func (l *logger) initFileLogger(fileName string, v ...interface{}) {
 	flags := log.Ldate | log.Ltime
 	file, _ := os.OpenFile(fmt.Sprintf("log/%s.log", fileName), os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0666)
 	defer file.Close()
-	infoFileLogger := log.New(file, "", flags)
-	infoFileLogger.SetOutput(file)
-	infoFileLogger.Println(v...)
+	fileLogger := log.New(file, "", flags)
+	fileLogger.SetOutput(file)
+	fileLogger.Println(v...)
 }
