@@ -1,6 +1,8 @@
 package helper
 
-import "app/pkg/config"
+import (
+	"app/pkg/config"
+)
 
 type metaData struct {
 	BACKEND_VERSION  string      `json:"backend_version" bson:"backend_version"`

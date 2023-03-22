@@ -3,6 +3,7 @@ package portal_user
 import (
 	"net/http"
 
+	"app/cmd/common"
 	"app/pkg/helper"
 )
 
@@ -10,7 +11,7 @@ type logic struct{}
 
 var Logic logic
 
-func (l *logic) List(filter PortalUserFilter) ([]PortalUser, int, []interface{}) {
+func (l *logic) List(filter PortalUserFilter) ([]PortalUser, common.Status, []interface{}) {
 	var errors []interface{} = nil
 
 	// Validate PortalUserFilter Struct
@@ -29,7 +30,7 @@ func (l *logic) List(filter PortalUserFilter) ([]PortalUser, int, []interface{})
 	return results, status, errors
 }
 
-func (l *logic) Insert(portal_user PortalUser) (PortalUser, int, []interface{}) {
+func (l *logic) Insert(portal_user PortalUser) (PortalUser, common.Status, []interface{}) {
 	var errors []interface{} = nil
 
 	//Validate PortalUser Struct
@@ -58,7 +59,7 @@ func (l *logic) Insert(portal_user PortalUser) (PortalUser, int, []interface{}) 
 	return result, status, errors
 }
 
-func (l *logic) Update(filter PortalUserFilter, portal_user PortalUser) (PortalUser, int, []interface{}) {
+func (l *logic) Update(filter PortalUserFilter, portal_user PortalUser) (PortalUser, common.Status, []interface{}) {
 	var errors []interface{} = nil
 
 	updatePortalUser := PortalUserUpdate(portal_user)
@@ -94,7 +95,7 @@ func (l *logic) Update(filter PortalUserFilter, portal_user PortalUser) (PortalU
 	return result, status, errors
 }
 
-func (l *logic) Archive(filter PortalUserFilter) (PortalUserFilter, int, []interface{}) {
+func (l *logic) Archive(filter PortalUserFilter) (PortalUserFilter, common.Status, []interface{}) {
 	var errors []interface{} = nil
 
 	// Validate PortalUserFilter Struct
@@ -113,7 +114,7 @@ func (l *logic) Archive(filter PortalUserFilter) (PortalUserFilter, int, []inter
 	return result, status, errors
 }
 
-func (l *logic) Restore(filter PortalUserFilter) (PortalUserFilter, int, []interface{}) {
+func (l *logic) Restore(filter PortalUserFilter) (PortalUserFilter, common.Status, []interface{}) {
 	var errors []interface{} = nil
 
 	// Validate PortalUserFilter Struct
@@ -132,7 +133,7 @@ func (l *logic) Restore(filter PortalUserFilter) (PortalUserFilter, int, []inter
 	return result, status, errors
 }
 
-func (l *logic) Login(payload PortalUserLoginPayload) (string, int, []interface{}) {
+func (l *logic) Login(payload PortalUserLoginPayload) (string, common.Status, []interface{}) {
 	var errors []interface{} = nil
 
 	// Validate LoginPayload Struct

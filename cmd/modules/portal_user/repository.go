@@ -7,6 +7,7 @@ import (
 
 	"gorm.io/gorm"
 
+	"app/cmd/common"
 	"app/pkg/storage/pg"
 )
 
@@ -14,7 +15,7 @@ type repository struct{}
 
 var Repository repository
 
-func (r *repository) List(filter PortalUserFilter, omits ...string) ([]PortalUser, int, error) {
+func (r *repository) List(filter PortalUserFilter, omits ...string) ([]PortalUser, common.Status, error) {
 	var portalUsers []PortalUser
 
 	result := pg.Conn.DB.Omit(omits...).Model(&PortalUser{}).Find(&portalUsers, filter)
@@ -25,7 +26,7 @@ func (r *repository) List(filter PortalUserFilter, omits ...string) ([]PortalUse
 	return portalUsers, http.StatusOK, nil
 }
 
-func (r *repository) Insert(portal_user PortalUser) (PortalUser, int, error) {
+func (r *repository) Insert(portal_user PortalUser) (PortalUser, common.Status, error) {
 	result := pg.Conn.DB.Model(&PortalUser{}).Create(&portal_user)
 	if result.Error != nil {
 		return PortalUser{}, http.StatusInternalServerError, result.Error
@@ -35,7 +36,7 @@ func (r *repository) Insert(portal_user PortalUser) (PortalUser, int, error) {
 	return portal_user, http.StatusOK, nil
 }
 
-func (r *repository) Update(filter PortalUserFilter, portal_user PortalUser) (PortalUser, int, error) {
+func (r *repository) Update(filter PortalUserFilter, portal_user PortalUser) (PortalUser, common.Status, error) {
 	result := pg.Conn.DB.Model(&PortalUser{}).Where(filter).Updates(&portal_user).Scan(&portal_user)
 	if result.Error != nil {
 		return PortalUser{}, http.StatusInternalServerError, result.Error
@@ -49,7 +50,7 @@ func (r *repository) Update(filter PortalUserFilter, portal_user PortalUser) (Po
 	return portal_user, http.StatusOK, nil
 }
 
-func (r *repository) Archive(filter PortalUserFilter) (PortalUserFilter, int, error) {
+func (r *repository) Archive(filter PortalUserFilter) (PortalUserFilter, common.Status, error) {
 	updates := map[string]interface{}{
 		"IsArchive": true,
 		"ArchiveAt": gorm.DeletedAt{Time: time.Now(), Valid: true},
@@ -67,7 +68,7 @@ func (r *repository) Archive(filter PortalUserFilter) (PortalUserFilter, int, er
 	return filter, http.StatusOK, nil
 }
 
-func (r *repository) Restore(filter PortalUserFilter) (PortalUserFilter, int, error) {
+func (r *repository) Restore(filter PortalUserFilter) (PortalUserFilter, common.Status, error) {
 	updates := map[string]interface{}{
 		"IsArchive": false,
 		"ArchiveAt": gorm.DeletedAt{},

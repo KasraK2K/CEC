@@ -9,7 +9,17 @@ import (
 	"app/pkg/config"
 )
 
-func SendEmail(recipients []string, body, subject string, bcc ...string) (string, string, error) {
+type EmailPayload struct {
+	Recipients []string
+	Body       string
+	Subject    string
+	BCC        []string
+}
+
+type response string
+type trackId string
+
+func SendEmail(recipients []string, body, subject string, bcc ...string) (response, trackId, error) {
 	mg := mailgun.NewMailgun(
 		config.AppConfig.MAILGUN_DOMAIN,
 		config.AppConfig.MAILGUN_PRIVATE_API_KEY,
@@ -31,5 +41,5 @@ func SendEmail(recipients []string, body, subject string, bcc ...string) (string
 		return "", "", err
 	}
 
-	return resp, id, nil
+	return response(resp), trackId(id), nil
 }
