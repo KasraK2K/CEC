@@ -13,13 +13,17 @@ import (
 type PayloadClaims struct {
 	ID     uint64 `json:"id"`
 	RoleID int    `json:"role_id"`
+	// Platform int    `json:"platform"` // TODO
+	// Type     int    `json:"type"` // TODO
 	jwt.RegisteredClaims
 }
 
 type Payload struct {
-	ID        uint64 `json:"id"`
-	RoleID    int    `json:"role_id"`
-	ExpiresAt int64  `json:"exp"`
+	ID     uint64 `json:"id"`
+	RoleID int    `json:"role_id"`
+	// Platform int    `json:"platform"` // TODO
+	// Type     int    `json:"type"` // TODO
+	ExpiresAt int64 `json:"exp"`
 }
 
 /* -------------------------------------------------------------------------- */
