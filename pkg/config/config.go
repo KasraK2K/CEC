@@ -9,23 +9,27 @@ import (
 )
 
 type config struct {
-	PORT             string `json:"port"`
-	MODE             string `json:"mode"`
-	PREFORK          bool   `json:"prefork"`
-	BACKEND_VERSION  string `json:"backend_version"`
-	FRONTEND_VERSION string `json:"frontend_version"`
-	APP_VERSION      string `json:"app_version"`
-	STDOUT_LOGS      string `json:"stdout_logs"`
-	FILE_LOGS        string `json:"file_logs"`
-	DB_HOST          string `json:"db_host"`
-	DB_PORT          string `json:"db_port"`
-	DB_PASSWORD      string `json:"dn_password"`
-	DB_USER          string `json:"db_user"`
-	DB_NAME          string `json:"db_name"`
-	DB_TIMEZONE      string `json:"db_timezone"`
-	DB_SSL_MODE      string `json:"db_ssl_mode"`
-	MONGODB_URI      string `json:"mongodb_uri"`
-	JWT_SIGNING_KEY  string `json:"jwt_signing_key"`
+	PORT                    string `json:"port"`
+	MODE                    string `json:"mode"`
+	PREFORK                 bool   `json:"prefork"`
+	BACKEND_VERSION         string `json:"backend_version"`
+	FRONTEND_VERSION        string `json:"frontend_version"`
+	APP_VERSION             string `json:"app_version"`
+	STDOUT_LOGS             string `json:"stdout_logs"`
+	FILE_LOGS               string `json:"file_logs"`
+	DB_HOST                 string `json:"db_host"`
+	DB_PORT                 string `json:"db_port"`
+	DB_PASSWORD             string `json:"dn_password"`
+	DB_USER                 string `json:"db_user"`
+	DB_NAME                 string `json:"db_name"`
+	DB_TIMEZONE             string `json:"db_timezone"`
+	DB_SSL_MODE             string `json:"db_ssl_mode"`
+	MONGODB_URI             string `json:"mongodb_uri"`
+	JWT_SIGNING_KEY         string `json:"jwt_signing_key"`
+	MAILGUN_PRIVATE_API_KEY string `json:"mailgun_private_api_key"`
+	MAILGUN_DOMAIN          string `json:"mailgun_domain"`
+	MAILGUN_API_BASE        string `json:"mailgun_api_base"`
+	MAILGUN_SENDER          string `json:"mailgun_sender"`
 }
 
 var AppConfig config
@@ -62,4 +66,9 @@ func SetConfig() {
 	AppConfig.MONGODB_URI = os.Getenv("MONGODB_URI")
 	// JWT
 	AppConfig.JWT_SIGNING_KEY = os.Getenv("JWT_SIGNING_KEY")
+	// MailGun
+	AppConfig.MAILGUN_PRIVATE_API_KEY = os.Getenv("MAILGUN_PRIVATE_API_KEY")
+	AppConfig.MAILGUN_DOMAIN = os.Getenv("MAILGUN_DOMAIN")
+	AppConfig.MAILGUN_API_BASE = os.Getenv("MAILGUN_API_BASE")
+	AppConfig.MAILGUN_SENDER = os.Getenv("MAILGUN_SENDER")
 }
