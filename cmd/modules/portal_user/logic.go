@@ -10,10 +10,6 @@ import (
 	"app/pkg/helper"
 )
 
-type logic struct{}
-
-var Logic logic
-
 func (l *logic) List(filter PortalUserFilter) ([]PortalUser, common.Status, error) {
 	results, status, err := Repository.List(filter, []string{"password"}...)
 	if err != nil {

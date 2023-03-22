@@ -11,10 +11,6 @@ import (
 	"app/pkg/storage/pg"
 )
 
-type repository struct{}
-
-var Repository repository
-
 func (r *repository) List(filter PortalUserFilter, omits ...string) ([]PortalUser, common.Status, error) {
 	var portalUsers []PortalUser
 
