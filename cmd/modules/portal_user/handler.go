@@ -15,7 +15,7 @@ func (h *handler) List(c *fiber.Ctx) error {
 	var payload JsonData
 	err := c.BodyParser(&payload)
 	if err != nil {
-		return helper.JSON(c, err, http.StatusBadRequest)
+		return helper.JSON(c, err.Error(), http.StatusBadRequest)
 	}
 
 	// Validate
@@ -40,7 +40,7 @@ func (h *handler) Insert(c *fiber.Ctx) error {
 
 	err := c.BodyParser(&payload)
 	if err != nil {
-		return helper.JSON(c, err, http.StatusBadRequest)
+		return helper.JSON(c, err.Error(), http.StatusBadRequest)
 	}
 
 	// Validate
@@ -66,7 +66,7 @@ func (h *handler) Update(c *fiber.Ctx) error {
 	var payload JsonData
 	err := c.BodyParser(&payload)
 	if err != nil {
-		return helper.JSON(c, err, http.StatusBadRequest)
+		return helper.JSON(c, err.Error(), http.StatusBadRequest)
 	}
 
 	// Validate
@@ -92,7 +92,7 @@ func (h *handler) Archive(c *fiber.Ctx) error {
 	var payload JsonData
 	err := c.BodyParser(&payload)
 	if err != nil {
-		return helper.JSON(c, err, http.StatusBadRequest)
+		return helper.JSON(c, err.Error(), http.StatusBadRequest)
 	}
 
 	// Validate
@@ -117,7 +117,7 @@ func (h *handler) Restore(c *fiber.Ctx) error {
 	var payload JsonData
 	err := c.BodyParser(&payload)
 	if err != nil {
-		return helper.JSON(c, err, http.StatusBadRequest)
+		return helper.JSON(c, err.Error(), http.StatusBadRequest)
 	}
 
 	// Validate
@@ -142,7 +142,7 @@ func (h *handler) Login(c *fiber.Ctx) error {
 	var payload jsonData
 	err := c.BodyParser(&payload)
 	if err != nil {
-		return helper.JSON(c, err, http.StatusBadRequest)
+		return helper.JSON(c, err.Error(), http.StatusBadRequest)
 	}
 
 	// Validate

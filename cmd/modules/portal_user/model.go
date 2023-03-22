@@ -23,9 +23,9 @@ type PortalUser struct {
 }
 
 type PortalUserFilter struct {
-	ID        uint   `json:"id,omitempty"         bson:"id,omitempty"`
-	Email     string `json:"email,omitempty"      bson:"email,omitempty"`
-	Gender    uint8  `json:"gender,omitempty"     bson:"gender,omitempty"`
+	ID        uint   `json:"id,omitempty"         bson:"id,omitempty"         validate:"omitempty"`
+	Email     string `json:"email,omitempty"      bson:"email,omitempty"      validate:"omitempty,email,min=6,max=32"`
+	Gender    uint8  `json:"gender,omitempty"     bson:"gender,omitempty"     validate:"omitempty,oneof=0 1 2"`
 	IsActive  bool   `json:"is_active,omitempty"  bson:"is_active,omitempty"`
 	IsAdmin   bool   `json:"is_admin,omitempty"   bson:"is_admin,omitempty"`
 	IsArchive bool   `json:"is_archive,omitempty" bson:"is_archive,omitempty"`
