@@ -12,6 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"app/pkg/config"
+	"app/pkg/helper"
 )
 
 type connection struct{}
@@ -67,7 +68,7 @@ func (c *connection) Ping(client *mongo.Client) {
 	if err := client.Database("admin").RunCommand(context.TODO(), bson.D{{Key: "ping", Value: 1}}).Decode(&result); err != nil {
 		log.Panic(err)
 	}
-	fmt.Println("Pinged your deployment. You successfully connected to MongoDB!")
+	helper.Logger.Debug("Pinged your deployment. You successfully connected to MongoDB!")
 }
 
 /* ------------------------------- Insert One ------------------------------- */
