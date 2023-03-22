@@ -17,7 +17,7 @@ func (l *logic) List(filter PortalUserFilter) ([]PortalUser, common.Status, []in
 	var errors []interface{} = nil
 
 	// Validate PortalUserFilter Struct
-	validationError := filter.Validate()
+	validationError := helper.Validator(filter)
 	if validationError.Errors != nil {
 		errors = append(errors, validationError.Errors)
 		return []PortalUser{}, http.StatusNotAcceptable, errors
@@ -36,7 +36,7 @@ func (l *logic) Insert(portalUser PortalUser) (PortalUser, common.Status, []inte
 	var errors []interface{} = nil
 
 	//Validate PortalUser Struct
-	validationError := portalUser.Validate()
+	validationError := helper.Validator(portalUser)
 	if validationError.Errors != nil {
 		errors = append(errors, validationError.Errors)
 		return PortalUser{}, http.StatusNotAcceptable, errors
@@ -71,14 +71,14 @@ func (l *logic) Update(filter PortalUserFilter, portalUser PortalUser) (PortalUs
 		return PortalUser{}, http.StatusInternalServerError, errors
 	}
 
-	updateValidationError := portalUserUpdate.Validate()
+	updateValidationError := helper.Validator(portalUserUpdate)
 	if updateValidationError.Errors != nil {
 		errors = append(errors, updateValidationError.Errors)
 		return PortalUser{}, http.StatusNotAcceptable, errors
 	}
 
 	//Validate PortalUser Struct
-	filterValidationError := filter.Validate()
+	filterValidationError := helper.Validator(filter)
 	if filterValidationError.Errors != nil {
 		errors = append(errors, filterValidationError.Errors)
 		return PortalUser{}, http.StatusNotAcceptable, errors
@@ -107,7 +107,7 @@ func (l *logic) Archive(filter PortalUserFilter) (PortalUserFilter, common.Statu
 	var errors []interface{} = nil
 
 	// Validate PortalUserFilter Struct
-	validationError := filter.Validate()
+	validationError := helper.Validator(filter)
 	if validationError.Errors != nil {
 		errors = append(errors, validationError.Errors)
 		return PortalUserFilter{}, http.StatusNotAcceptable, errors
@@ -126,7 +126,7 @@ func (l *logic) Restore(filter PortalUserFilter) (PortalUserFilter, common.Statu
 	var errors []interface{} = nil
 
 	// Validate PortalUserFilter Struct
-	validationError := filter.Validate()
+	validationError := helper.Validator(filter)
 	if validationError.Errors != nil {
 		errors = append(errors, validationError.Errors)
 		return PortalUserFilter{}, http.StatusNotAcceptable, errors
@@ -145,7 +145,7 @@ func (l *logic) Login(payload PortalUserLoginPayload) (string, common.Status, []
 	var errors []interface{} = nil
 
 	// Validate LoginPayload Struct
-	validationError := payload.Validate()
+	validationError := helper.Validator(payload)
 	if validationError.Errors != nil {
 		errors = append(errors, validationError.Errors)
 		return "", http.StatusNotAcceptable, errors

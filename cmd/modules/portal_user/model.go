@@ -4,8 +4,6 @@ import (
 	"time"
 
 	"gorm.io/gorm"
-
-	"app/pkg/helper"
 )
 
 type PortalUser struct {
@@ -25,10 +23,6 @@ type PortalUser struct {
 	ArchiveAt     gorm.DeletedAt `json:"archive_at"         bson:"archive_at"         gorm:"type:timestamptz;index"`
 }
 
-func (portalUser *PortalUser) Validate() helper.ErrorResponse {
-	return helper.Validator(portalUser)
-}
-
 type PortalUserFilter struct {
 	ID        uint   `json:"id,omitempty"         bson:"id,omitempty"`
 	Email     string `json:"email,omitempty"      bson:"email,omitempty"`
@@ -36,10 +30,6 @@ type PortalUserFilter struct {
 	IsActive  bool   `json:"is_active,omitempty"  bson:"is_active,omitempty"`
 	IsAdmin   bool   `json:"is_admin,omitempty"   bson:"is_admin,omitempty"`
 	IsArchive bool   `json:"is_archive,omitempty" bson:"is_archive,omitempty"`
-}
-
-func (filter *PortalUserFilter) Validate() helper.ErrorResponse {
-	return helper.Validator(filter)
 }
 
 type PortalUserUpdate struct {
@@ -56,16 +46,8 @@ type PortalUserUpdate struct {
 	IsArchive     bool   `json:"is_archive"     bson:"is_archive"`
 }
 
-func (update *PortalUserUpdate) Validate() helper.ErrorResponse {
-	return helper.Validator(update)
-}
-
 type PortalUserLoginPayload struct {
 	Email    string `json:"email"    bson:"email"    validate:"required,email,min=6,max=32"`
 	Password string `json:"password" bson:"password" validate:"required,min=8,max=32"`
 	Platform uint8  `json:"platform" bson:"platform" validate:"required,oneof=1 2"`
-}
-
-func (login *PortalUserLoginPayload) Validate() helper.ErrorResponse {
-	return helper.Validator(login)
 }
