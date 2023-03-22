@@ -32,13 +32,18 @@ func (h *handler) List(c *fiber.Ctx) error {
 }
 
 func (h *handler) Insert(c *fiber.Ctx) error {
-	portal_user := new(PortalUser)
-	parseError := c.BodyParser(portal_user)
+	type jsonData struct {
+		Data PortalUser `json:"data"`
+	}
+	var payload jsonData
+
+	parseError := c.BodyParser(&payload)
 	if parseError != nil {
 		return helper.JSON(c, parseError.Error(), http.StatusBadRequest)
 	}
 
-	result, status, logicError := Logic.Insert(*portal_user)
+	portalUser := payload.Data
+	result, status, logicError := Logic.Insert(portalUser)
 	if logicError != nil {
 		return helper.JSON(c, logicError, status)
 	}
@@ -48,8 +53,8 @@ func (h *handler) Insert(c *fiber.Ctx) error {
 
 func (h *handler) Update(c *fiber.Ctx) error {
 	type JsonData struct {
-		Filter     PortalUserFilter `json:"filter"`
-		PortalUser PortalUser       `json:"portal_user"`
+		Filter PortalUserFilter `json:"filter"`
+		Data   PortalUser       `json:"data"`
 	}
 	var payload JsonData
 	parseError := c.BodyParser(&payload)
@@ -58,7 +63,7 @@ func (h *handler) Update(c *fiber.Ctx) error {
 	}
 
 	filter := payload.Filter
-	portal_user := payload.PortalUser
+	portal_user := payload.Data
 	result, status, logicError := Logic.Update(filter, portal_user)
 	if len(logicError) > 0 {
 		return helper.JSON(c, logicError, status)
