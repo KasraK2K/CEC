@@ -19,7 +19,12 @@ type EmailPayload struct {
 type response string
 type trackId string
 
-func SendEmail(recipients []string, body, subject string, bcc ...string) (response, trackId, error) {
+func SendEmail(payload EmailPayload) (response, trackId, error) {
+	recipients := payload.Recipients
+	body := payload.Body
+	subject := payload.Subject
+	bcc := payload.BCC
+
 	mg := mailgun.NewMailgun(
 		config.AppConfig.MAILGUN_DOMAIN,
 		config.AppConfig.MAILGUN_PRIVATE_API_KEY,
