@@ -159,6 +159,29 @@ func (h *handler) Login(c *fiber.Ctx) error {
 	return helper.JSON(c, results, status)
 }
 
-// Forgot
+func (h *handler) ForgotPassword(c *fiber.Ctx) error {
+	type forgetPass struct {
+		Email string `json:"email" bson:"email" gorm:"type:string;unique;not null;" validate:"required,email,min=6,max=32"`
+	}
+	type JsonData struct {
+		Filter forgetPass `json:"filter"`
+	}
+	var payload JsonData
+	err := c.BodyParser(&payload)
+	if err != nil {
+		return helper.JSON(c, err.Error(), http.StatusBadRequest)
+	}
 
-// Reset
+	// Validate
+	validationError := helper.Validator(payload)
+	if validationError.Errors != nil {
+		return helper.JSON(c, validationError.Errors, http.StatusNotAcceptable)
+	}
+
+	results, status, err := Logic.ForgotPassword(payload.Filter.Email)
+	if err != nil {
+		return helper.JSON(c, err.Error(), status)
+	}
+
+	return helper.JSON(c, results, status)
+}
