@@ -9,7 +9,7 @@ import (
 func Routes(router fiber.Router) {
 	pg.Conn.Migrate(&PortalUser{})
 
-	userGroup := router.Group("/users")
+	userGroup := router.Group("/portal_users")
 
 	userGroup.Post("/find", Handler.List)
 	userGroup.Post("/create", Handler.Insert)
