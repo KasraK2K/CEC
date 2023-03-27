@@ -262,8 +262,6 @@ func (c *connection) UpdateOne(database, collection string, filter bson.D, updat
 		log.Panic(err)
 	}
 
-	fmt.Println(result.UpsertedID)
-
 	return updateResult{
 		MatchedCount:  result.MatchedCount,
 		ModifiedCount: result.ModifiedCount,

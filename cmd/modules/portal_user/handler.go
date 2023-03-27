@@ -185,3 +185,16 @@ func (h *handler) ForgotPassword(c *fiber.Ctx) error {
 
 	return helper.JSON(c, results, status)
 }
+
+func (h *handler) Upload(c *fiber.Ctx) error {
+	type upload struct {
+		M string `json:"m"`
+		S string `json:"s"`
+	}
+	var payload upload
+	err := c.BodyParser(&payload)
+	if err != nil {
+		return helper.JSON(c, err.Error(), http.StatusBadRequest)
+	}
+	return helper.JSON(c, payload, http.StatusOK)
+}
