@@ -11,7 +11,7 @@ import (
 )
 
 type token struct {
-	Platform Platform `json:"platform" bson:"platform"`
+	Platform Platform `json:"platform"  bson:"platform"`
 	UserType UserType `json:"user_type" bson:"user_type"`
 }
 
@@ -22,23 +22,23 @@ type Platform struct {
 
 type UserType struct {
 	Portal uint8 `json:"portal" bson:"portal"`
-	User   uint8 `json:"user" bson:"user"`
+	User   uint8 `json:"user"   bson:"user"`
 }
 
 type PayloadClaims struct {
-	ID       uint  `json:"id" bson:"id"`
-	RoleID   int   `json:"role_id" bson:"role_id"`
-	Platform uint8 `json:"platform" bson:"platform"`
-	UserType uint8 `json:"user_type" bson:"user_type"`
+	ID         uint   `json:"id"         bson:"id"`
+	Permission string `json:"permission" bson:"permission"`
+	Platform   uint8  `json:"platform"   bson:"platform"`
+	UserType   uint8  `json:"user_type"  bson:"user_type"`
 	jwt.RegisteredClaims
 }
 
 type Payload struct {
-	ID        uint  `json:"id" bson:"id"`
-	RoleID    int   `json:"role_id" bson:"role_id"`
-	Platform  uint8 `json:"platform" bson:"platform"`
-	UserType  uint8 `json:"user_type" bson:"user_type"`
-	ExpiresAt int64 `json:"exp" bson:"exp"`
+	ID         uint   `json:"id"         bson:"id"`
+	Permission string `json:"permission" bson:"permission"`
+	Platform   uint8  `json:"platform"   bson:"platform"`
+	UserType   uint8  `json:"user_type"  bson:"user_type"`
+	ExpiresAt  int64  `json:"exp"        bson:"exp"`
 }
 
 var platform = Platform{
@@ -61,7 +61,7 @@ var Token = token{
 /* -------------------------------------------------------------------------- */
 // payloadClaims := helper.PayloadClaims{
 // 	ID:   1,
-// 	Role: "admin",
+// 	Permission: "1111111",
 // }
 // token, err := helper.CreateToken(payloadClaims)
 // if err != nil {
@@ -79,10 +79,10 @@ func (t *token) CreateToken(payloadClaims PayloadClaims) (string, error) {
 
 	// Set the claims for the token
 	claims := &PayloadClaims{
-		ID:       payloadClaims.ID,
-		RoleID:   payloadClaims.RoleID,
-		Platform: payloadClaims.Platform,
-		UserType: payloadClaims.UserType,
+		ID:         payloadClaims.ID,
+		Permission: payloadClaims.Permission,
+		Platform:   payloadClaims.Platform,
+		UserType:   payloadClaims.UserType,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expTime),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
@@ -136,7 +136,7 @@ func (t *token) ParseToken(tokenString string) (*Payload, error) {
 	// 	return nil, err
 	// }
 	payload.ID = claims.ID
-	payload.RoleID = claims.RoleID
+	payload.Permission = claims.Permission
 	payload.Platform = claims.Platform
 	payload.UserType = claims.UserType
 
