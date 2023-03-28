@@ -12,6 +12,7 @@ import (
 	"app/pkg/helper"
 )
 
+// TODO : validate file type, validate file size, remove if not valid
 func HandleMultipart(c *fiber.Ctx) error {
 	contentType := c.Get("Content-Type")
 	if strings.Contains(contentType, "multipart/form-data") {

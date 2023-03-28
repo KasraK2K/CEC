@@ -6,6 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/monitor"
 
+	"app/cmd/modules/company"
 	"app/cmd/modules/portal_user"
 	"app/pkg/helper"
 )
@@ -15,6 +16,7 @@ func Routes(app *fiber.App) {
 	app.Get("/_metrics", monitor.New(monitor.Config{Title: "Default Metrics Page"}))
 
 	v1 := app.Group("/v1")
+	company.Routes(v1)
 	portal_user.Routes(v1)
 
 	// Handle other routes
