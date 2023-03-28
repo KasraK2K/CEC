@@ -32,14 +32,14 @@ func (r *repository) Insert(portalUser PortalUser) (PortalUser, common.Status, e
 	return portalUser, http.StatusOK, nil
 }
 
-func (r *repository) Update(filter PortalUserFilter, update PortalUserUpdate) (PortalUserUpdate, common.Status, error) {
+func (r *repository) Update(filter PortalUserFilter, update PortalUser) (PortalUser, common.Status, error) {
 	result := pg.Conn.DB.Model(&PortalUser{}).Where(filter).Updates(&update).Scan(&update)
 	if result.Error != nil {
-		return PortalUserUpdate{}, http.StatusInternalServerError, result.Error
+		return PortalUser{}, http.StatusInternalServerError, result.Error
 	}
 
 	if result.RowsAffected == 0 {
-		return PortalUserUpdate{}, http.StatusNotFound, errors.New("can't find any user with this filter")
+		return PortalUser{}, http.StatusNotFound, errors.New("can't find any user with this filter")
 	}
 
 	update.Password = ""

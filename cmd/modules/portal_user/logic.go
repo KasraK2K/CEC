@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/mitchellh/mapstructure"
+
 	"app/cmd/common"
 	"app/pkg/helper"
 )
@@ -41,23 +43,29 @@ func (l *logic) Insert(portalUser PortalUser) (PortalUser, common.Status, error)
 	return result, status, nil
 }
 
-func (l *logic) Update(filter PortalUserFilter, update PortalUserUpdate) (PortalUserUpdate, common.Status, error) {
+func (l *logic) Update(filter PortalUserFilter, update PortalUserUpdate) (PortalUser, common.Status, error) {
 	if len(filter.Email) > 0 {
 		filter.Email = strings.ToLower(filter.Email)
+	}
+
+	var portalUser PortalUser
+	err := mapstructure.Decode(update, &portalUser)
+	if err != nil {
+		return PortalUser{}, http.StatusInternalServerError, err
 	}
 
 	// Hash password
 	if len(update.Password) > 0 {
 		hash, err := helper.HashPassword(update.Password)
 		if err != nil {
-			return PortalUserUpdate{}, http.StatusInternalServerError, err
+			return PortalUser{}, http.StatusInternalServerError, err
 		}
 		update.Password = hash
 	}
 
-	result, status, err := Repository.Update(filter, update)
+	result, status, err := Repository.Update(filter, portalUser)
 	if err != nil {
-		return PortalUserUpdate{}, status, err
+		return PortalUser{}, status, err
 	}
 
 	return result, status, nil
