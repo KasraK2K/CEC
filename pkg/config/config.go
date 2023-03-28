@@ -17,6 +17,8 @@ type config struct {
 	APP_VERSION             string `json:"app_version"`
 	STDOUT_LOGS             string `json:"stdout_logs"`
 	FILE_LOGS               string `json:"file_logs"`
+	UPLOAD_PATH             string `json:"upload_path"`
+	STATIC_FILE_URL         string `json:"static_file_url"`
 	DB_HOST                 string `json:"db_host"`
 	DB_PORT                 string `json:"db_port"`
 	DB_PASSWORD             string `json:"dn_password"`
@@ -54,6 +56,8 @@ func SetConfig() {
 	AppConfig.APP_VERSION = os.Getenv("APP_VERSION")
 	AppConfig.STDOUT_LOGS = os.Getenv("STDOUT_LOGS")
 	AppConfig.FILE_LOGS = os.Getenv("FILE_LOGS")
+	AppConfig.UPLOAD_PATH = os.Getenv("UPLOAD_PATH")
+	AppConfig.STATIC_FILE_URL = os.Getenv("STATIC_FILE_URL")
 	// PostgreSQL Database
 	AppConfig.DB_HOST = os.Getenv("DB_HOST")
 	AppConfig.DB_PORT = os.Getenv("DB_PORT")
