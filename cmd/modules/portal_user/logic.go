@@ -6,8 +6,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/mitchellh/mapstructure"
-
 	"app/cmd/common"
 	"app/pkg/helper"
 )
@@ -43,29 +41,23 @@ func (l *logic) Insert(portalUser PortalUser) (PortalUser, common.Status, error)
 	return result, status, nil
 }
 
-func (l *logic) Update(filter PortalUserFilter, portalUser PortalUser) (PortalUser, common.Status, error) {
+func (l *logic) Update(filter PortalUserFilter, update PortalUserUpdate) (PortalUserUpdate, common.Status, error) {
 	if len(filter.Email) > 0 {
 		filter.Email = strings.ToLower(filter.Email)
 	}
 
-	var portalUserUpdate PortalUserUpdate
-	err := mapstructure.Decode(portalUser, &portalUserUpdate)
-	if err != nil {
-		return PortalUser{}, http.StatusInternalServerError, err
-	}
-
 	// Hash password
-	if len(portalUser.Password) > 0 {
-		hash, err := helper.HashPassword(portalUser.Password)
+	if len(update.Password) > 0 {
+		hash, err := helper.HashPassword(update.Password)
 		if err != nil {
-			return PortalUser{}, http.StatusInternalServerError, err
+			return PortalUserUpdate{}, http.StatusInternalServerError, err
 		}
-		portalUser.Password = hash
+		update.Password = hash
 	}
 
-	result, status, err := Repository.Update(filter, portalUser)
+	result, status, err := Repository.Update(filter, update)
 	if err != nil {
-		return PortalUser{}, status, err
+		return PortalUserUpdate{}, status, err
 	}
 
 	return result, status, nil
@@ -137,7 +129,7 @@ func (l *logic) ForgotPassword(email string) (string, common.Status, error) {
 	}
 	filter := PortalUserFilter{Email: email}
 	password := helper.RandomString(30)
-	update := PortalUser{Password: password}
+	update := PortalUserUpdate{Password: password}
 
 	_, status, err := l.Update(filter, update)
 	if err != nil {

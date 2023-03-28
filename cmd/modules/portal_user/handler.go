@@ -61,7 +61,7 @@ func (h *handler) Insert(c *fiber.Ctx) error {
 func (h *handler) Update(c *fiber.Ctx) error {
 	type JsonData struct {
 		Filter PortalUserFilter `json:"filter"`
-		Data   PortalUser       `json:"data"`
+		Data   PortalUserUpdate `json:"data"`
 	}
 	var payload JsonData
 	err := c.BodyParser(&payload)
@@ -76,8 +76,8 @@ func (h *handler) Update(c *fiber.Ctx) error {
 	}
 
 	filter := payload.Filter
-	portalUser := payload.Data
-	result, status, err := Logic.Update(filter, portalUser)
+	update := payload.Data
+	result, status, err := Logic.Update(filter, update)
 	if err != nil {
 		return helper.JSON(c, err.Error(), status)
 	}
