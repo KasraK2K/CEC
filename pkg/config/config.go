@@ -27,6 +27,8 @@ type config struct {
 	DB_TIMEZONE             string `json:"db_timezone"`
 	DB_SSL_MODE             string `json:"db_ssl_mode"`
 	MONGODB_URI             string `json:"mongodb_uri"`
+	REDIS_ADDRESS           string `json:"redis_address"`
+	REDIS_PASSWORD          string `json:"redis_password"`
 	JWT_SIGNING_KEY         string `json:"jwt_signing_key"`
 	MAILGUN_PRIVATE_API_KEY string `json:"mailgun_private_api_key"`
 	MAILGUN_DOMAIN          string `json:"mailgun_domain"`
@@ -68,6 +70,9 @@ func SetConfig() {
 	AppConfig.DB_SSL_MODE = os.Getenv("DB_SSL_MODE")
 	// MongoDB Database
 	AppConfig.MONGODB_URI = os.Getenv("MONGODB_URI")
+	// Redis Database
+	AppConfig.REDIS_ADDRESS = os.Getenv("REDIS_ADDRESS")
+	AppConfig.REDIS_PASSWORD = os.Getenv("REDIS_PASSWORD")
 	// JWT
 	AppConfig.JWT_SIGNING_KEY = os.Getenv("JWT_SIGNING_KEY")
 	// MailGun
