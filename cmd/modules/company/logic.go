@@ -14,7 +14,7 @@ func (l *logic) List(filter CompanyFilter) ([]Company, common.Status, error) {
 		filter.Brand = strings.ToLower(filter.Brand)
 	}
 
-	results, status, err := Repository.List(filter, []string{"password"}...)
+	results, status, err := Repository.List(filter)
 	if err != nil {
 		return []Company{}, status, err
 	}
@@ -23,6 +23,10 @@ func (l *logic) List(filter CompanyFilter) ([]Company, common.Status, error) {
 }
 
 func (l *logic) Insert(company Company) (Company, common.Status, error) {
+	if len(company.Brand) > 0 {
+		company.Brand = strings.ToLower(company.Brand)
+	}
+
 	result, status, err := Repository.Insert(company)
 	if err != nil {
 		return Company{}, status, err
@@ -34,6 +38,10 @@ func (l *logic) Insert(company Company) (Company, common.Status, error) {
 func (l *logic) Update(filter CompanyFilter, update CompanyUpdate) (Company, common.Status, error) {
 	if len(filter.Brand) > 0 {
 		filter.Brand = strings.ToLower(filter.Brand)
+	}
+
+	if len(update.Brand) > 0 {
+		update.Brand = strings.ToLower(update.Brand)
 	}
 
 	var company Company

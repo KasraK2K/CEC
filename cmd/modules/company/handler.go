@@ -49,8 +49,8 @@ func (h *handler) Insert(c *fiber.Ctx) error {
 		return helper.JSON(c, validationError.Errors, http.StatusNotAcceptable)
 	}
 
-	portalUser := payload.Data
-	result, status, err := Logic.Insert(portalUser)
+	company := payload.Data
+	result, status, err := Logic.Insert(company)
 	if err != nil {
 		return helper.JSON(c, err.Error(), status)
 	}
@@ -76,8 +76,8 @@ func (h *handler) Update(c *fiber.Ctx) error {
 	}
 
 	filter := payload.Filter
-	portalUser := payload.Data
-	result, status, err := Logic.Update(filter, portalUser)
+	company := payload.Data
+	result, status, err := Logic.Update(filter, company)
 	if err != nil {
 		return helper.JSON(c, err.Error(), status)
 	}
