@@ -19,7 +19,6 @@ import (
 	"app/cmd/middleware"
 	"app/cmd/routes"
 	"app/pkg/config"
-	"app/pkg/helper"
 	"app/pkg/storage/pg"
 )
 
@@ -46,9 +45,7 @@ func main() {
 	app.Use(recover.New())
 	app.Use(requestid.New())
 	app.Use(middleware.HandleMultipart)
-
-	list, _ := helper.ListOfFileURLs("ford/mustang")
-	fmt.Println(list)
+	app.Use(middleware.PullOutToken)
 
 	// Router
 	routes.Routes(app)
