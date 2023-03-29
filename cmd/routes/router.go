@@ -7,6 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/monitor"
 
 	"app/cmd/modules/company"
+	"app/cmd/modules/model"
 	"app/cmd/modules/portal_user"
 	"app/pkg/helper"
 )
@@ -17,6 +18,7 @@ func Routes(app *fiber.App) {
 
 	v1 := app.Group("/v1")
 	company.Routes(v1)
+	model.Routes(v1)
 	portal_user.Routes(v1)
 
 	// Handle other routes
