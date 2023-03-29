@@ -46,5 +46,5 @@ type PortalUserUpdate struct {
 type PortalUserLoginPayload struct {
 	Email    string `json:"email"    bson:"email"    validate:"required,email,min=6,max=32"`
 	Password string `json:"password" bson:"password" validate:"required,min=8,max=32"`
-	Platform uint8  `json:"platform" bson:"platform" validate:"required,oneof=1 2"`
+	Platform int    `json:"platform" bson:"platform" validate:"required,oneof=1 2"`
 }

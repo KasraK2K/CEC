@@ -9,14 +9,14 @@ import (
 func Routes(router fiber.Router) {
 	pg.Conn.Migrate(&PortalUser{})
 
-	userGroup := router.Group("/portal_user")
+	portalUserGroup := router.Group("/portal_user")
 
-	userGroup.Post("/find", Handler.List)
-	userGroup.Post("/create", Handler.Insert)
-	userGroup.Patch("/update", Handler.Update)
-	userGroup.Delete("/archive", Handler.Archive)
-	userGroup.Patch("/restore", Handler.Restore)
-	userGroup.Post("/login", Handler.Login)
-	userGroup.Post("/forgot", Handler.ForgotPassword)
-	userGroup.Post("/upload", Handler.Upload)
+	portalUserGroup.Post("/find", Handler.List)
+	portalUserGroup.Post("/create", Handler.Insert)
+	portalUserGroup.Patch("/update", Handler.Update)
+	portalUserGroup.Delete("/archive", Handler.Archive)
+	portalUserGroup.Patch("/restore", Handler.Restore)
+	portalUserGroup.Post("/login", Handler.Login)
+	portalUserGroup.Post("/forgot", Handler.ForgotPassword)
+	portalUserGroup.Post("/upload", Handler.Upload)
 }
