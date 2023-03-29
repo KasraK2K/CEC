@@ -16,28 +16,28 @@ type token struct {
 }
 
 type Platform struct {
-	Web uint8 `json:"web" bson:"web"`
-	App uint8 `json:"app" bson:"app"`
+	Web int `json:"web" bson:"web"`
+	App int `json:"app" bson:"app"`
 }
 
 type UserType struct {
-	Portal uint8 `json:"portal" bson:"portal"`
-	User   uint8 `json:"user"   bson:"user"`
+	Portal int `json:"portal" bson:"portal"`
+	User   int `json:"user"   bson:"user"`
 }
 
 type PayloadClaims struct {
 	ID         uint   `json:"id"         bson:"id"`
 	Permission string `json:"permission" bson:"permission"`
-	Platform   uint8  `json:"platform"   bson:"platform"`
-	UserType   uint8  `json:"user_type"  bson:"user_type"`
+	Platform   int    `json:"platform"   bson:"platform"`
+	UserType   int    `json:"user_type"  bson:"user_type"`
 	jwt.RegisteredClaims
 }
 
 type Payload struct {
 	ID         uint   `json:"id"         bson:"id"`
 	Permission string `json:"permission" bson:"permission"`
-	Platform   uint8  `json:"platform"   bson:"platform"`
-	UserType   uint8  `json:"user_type"  bson:"user_type"`
+	Platform   int    `json:"platform"   bson:"platform"`
+	UserType   int    `json:"user_type"  bson:"user_type"`
 	ExpiresAt  int64  `json:"exp"        bson:"exp"`
 }
 
