@@ -9,11 +9,11 @@ import (
 func Routes(router fiber.Router) {
 	pg.Conn.Migrate(&Company{})
 
-	userGroup := router.Group("/company")
+	companyGroup := router.Group("/company")
 
-	userGroup.Post("/find", Handler.List)
-	userGroup.Post("/create", Handler.Insert)
-	userGroup.Patch("/update", Handler.Update)
-	userGroup.Delete("/archive", Handler.Archive)
-	userGroup.Patch("/restore", Handler.Restore)
+	companyGroup.Post("/find", Handler.List)
+	companyGroup.Post("/create", Handler.Insert)
+	companyGroup.Patch("/update", Handler.Update)
+	companyGroup.Delete("/archive", Handler.Archive)
+	companyGroup.Patch("/restore", Handler.Restore)
 }
