@@ -8,8 +8,8 @@ import (
 
 type PortalUser struct {
 	PortalUserID  uint           `json:"portal_user_id"     bson:"portal_user_id"     gorm:"type:uint;primaryKey;<-:false"`
-	Email         string         `json:"email"              bson:"email"              gorm:"type:string;unique;not null;"                        validate:"required,email,min=6,max=32"`
-	Password      string         `json:"password,omitempty" bson:"password,omitempty" gorm:"type:string;check:length(password) >= 8"             validate:"required,min=8,max=32"`
+	Email         string         `json:"email"              bson:"email"              gorm:"type:string;unique;not null;"            validate:"required,email,min=6,max=32"`
+	Password      string         `json:"password,omitempty" bson:"password,omitempty" gorm:"type:string;check:length(password) >= 8" validate:"required,min=8,max=32"`
 	ContactNumber string         `json:"contact_number"     bson:"contact_number"     gorm:"type:string;"`
 	FirstName     string         `json:"first_name"         bson:"first_name"         gorm:"type:string;"`
 	Surname       string         `json:"surname"            bson:"surname"            gorm:"type:string;"`

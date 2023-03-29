@@ -26,6 +26,10 @@ func (l *logic) List(filter PortalUserFilter) ([]PortalUser, common.Status, erro
 }
 
 func (l *logic) Insert(portalUser PortalUser) (PortalUser, common.Status, error) {
+	if len(portalUser.Email) > 0 {
+		portalUser.Email = strings.ToLower(portalUser.Email)
+	}
+
 	// Hash password
 	if len(portalUser.Password) > 0 {
 		hash, err := helper.HashPassword(portalUser.Password)
@@ -46,6 +50,10 @@ func (l *logic) Insert(portalUser PortalUser) (PortalUser, common.Status, error)
 func (l *logic) Update(filter PortalUserFilter, update PortalUserUpdate) (PortalUser, common.Status, error) {
 	if len(filter.Email) > 0 {
 		filter.Email = strings.ToLower(filter.Email)
+	}
+
+	if len(update.Email) > 0 {
+		update.Email = strings.ToLower(update.Email)
 	}
 
 	var portalUser PortalUser
