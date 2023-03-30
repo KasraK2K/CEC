@@ -6,6 +6,7 @@ import (
 	"gorm.io/gorm"
 
 	"app/cmd/modules/company"
+	"app/cmd/modules/variant_local"
 )
 
 type Model struct {
@@ -20,7 +21,8 @@ type Model struct {
 
 type FindModel struct {
 	Model
-	Company *company.Company `json:"company,omitempty"       bson:"company,omitempty"`
+	Company      *company.Company            `json:"company,omitempty"       bson:"company,omitempty"`
+	VariantLocal *variant_local.VariantLocal `json:"variant_local,omitempty" bson:"variant_local,omitempty" gorm:"foreignKey:ModelID"`
 }
 
 type ModelFilter struct {
