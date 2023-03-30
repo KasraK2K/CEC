@@ -4,36 +4,39 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/joho/godotenv"
 )
 
 type config struct {
-	PORT                    string `json:"port"`
-	MODE                    string `json:"mode"`
-	PREFORK                 bool   `json:"prefork"`
-	BACKEND_VERSION         string `json:"backend_version"`
-	FRONTEND_VERSION        string `json:"frontend_version"`
-	APP_VERSION             string `json:"app_version"`
-	STDOUT_LOGS             string `json:"stdout_logs"`
-	FILE_LOGS               string `json:"file_logs"`
-	UPLOAD_PATH             string `json:"upload_path"`
-	STATIC_FILE_URL         string `json:"static_file_url"`
-	DB_HOST                 string `json:"db_host"`
-	DB_PORT                 string `json:"db_port"`
-	DB_PASSWORD             string `json:"dn_password"`
-	DB_USER                 string `json:"db_user"`
-	DB_NAME                 string `json:"db_name"`
-	DB_TIMEZONE             string `json:"db_timezone"`
-	DB_SSL_MODE             string `json:"db_ssl_mode"`
-	MONGODB_URI             string `json:"mongodb_uri"`
-	REDIS_ADDRESS           string `json:"redis_address"`
-	REDIS_PASSWORD          string `json:"redis_password"`
-	JWT_SIGNING_KEY         string `json:"jwt_signing_key"`
-	MAILGUN_PRIVATE_API_KEY string `json:"mailgun_private_api_key"`
-	MAILGUN_DOMAIN          string `json:"mailgun_domain"`
-	MAILGUN_API_BASE        string `json:"mailgun_api_base"`
-	MAILGUN_SENDER          string `json:"mailgun_sender"`
+	PORT                    string   `json:"port"`
+	MODE                    string   `json:"mode"`
+	PREFORK                 bool     `json:"prefork"`
+	BACKEND_VERSION         string   `json:"backend_version"`
+	FRONTEND_VERSION        string   `json:"frontend_version"`
+	APP_VERSION             string   `json:"app_version"`
+	STDOUT_LOGS             string   `json:"stdout_logs"`
+	FILE_LOGS               string   `json:"file_logs"`
+	UPLOAD_PATH             string   `json:"upload_path"`
+	FILE_EXTENSIONS         []string `json:"file_extensions"`
+	FILE_SIZE               int64    `json:"file_size"`
+	STATIC_FILE_URL         string   `json:"static_file_url"`
+	DB_HOST                 string   `json:"db_host"`
+	DB_PORT                 string   `json:"db_port"`
+	DB_PASSWORD             string   `json:"dn_password"`
+	DB_USER                 string   `json:"db_user"`
+	DB_NAME                 string   `json:"db_name"`
+	DB_TIMEZONE             string   `json:"db_timezone"`
+	DB_SSL_MODE             string   `json:"db_ssl_mode"`
+	MONGODB_URI             string   `json:"mongodb_uri"`
+	REDIS_ADDRESS           string   `json:"redis_address"`
+	REDIS_PASSWORD          string   `json:"redis_password"`
+	JWT_SIGNING_KEY         string   `json:"jwt_signing_key"`
+	MAILGUN_PRIVATE_API_KEY string   `json:"mailgun_private_api_key"`
+	MAILGUN_DOMAIN          string   `json:"mailgun_domain"`
+	MAILGUN_API_BASE        string   `json:"mailgun_api_base"`
+	MAILGUN_SENDER          string   `json:"mailgun_sender"`
 }
 
 var AppConfig config
@@ -49,6 +52,13 @@ func SetConfig() {
 		log.Fatal(err)
 	}
 
+	fileExtensions := strings.Split(os.Getenv("FILE_EXTENSIONS"), ",")
+
+	fileSize, err := strconv.ParseInt(os.Getenv("FILE_SIZE"), 10, 64)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	// Application
 	AppConfig.PORT = os.Getenv("PORT")
 	AppConfig.MODE = os.Getenv("MODE")
@@ -59,6 +69,8 @@ func SetConfig() {
 	AppConfig.STDOUT_LOGS = os.Getenv("STDOUT_LOGS")
 	AppConfig.FILE_LOGS = os.Getenv("FILE_LOGS")
 	AppConfig.UPLOAD_PATH = os.Getenv("UPLOAD_PATH")
+	AppConfig.FILE_EXTENSIONS = fileExtensions
+	AppConfig.FILE_SIZE = fileSize
 	AppConfig.STATIC_FILE_URL = os.Getenv("STATIC_FILE_URL")
 	// PostgreSQL Database
 	AppConfig.DB_HOST = os.Getenv("DB_HOST")
