@@ -12,14 +12,14 @@ import (
 )
 
 func (r *repository) List(filter CompanyFilter, omits ...string) ([]Company, common.Status, error) {
-	var company []Company
+	var companies []Company
 
-	result := pg.Conn.DB.Omit(omits...).Model(&Company{}).Find(&company, filter)
+	result := pg.Conn.DB.Omit(omits...).Model(&Company{}).Find(&companies, filter)
 	if result.Error != nil {
 		return []Company{}, http.StatusInternalServerError, result.Error
 	}
 
-	return company, http.StatusOK, nil
+	return companies, http.StatusOK, nil
 }
 
 func (r *repository) Insert(company Company) (Company, common.Status, error) {

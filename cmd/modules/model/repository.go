@@ -12,14 +12,29 @@ import (
 )
 
 func (r *repository) List(filter ModelFilter, omits ...string) ([]FindModel, common.Status, error) {
-	var model []FindModel
+	var models []FindModel
 
-	result := pg.Conn.DB.Preload("Company").Omit(omits...).Model(&Model{}).Joins("JOIN companies ON companies.company_id = models.model_id").Find(&model, filter)
+	result := pg.Conn.DB.
+		Model(&Model{}).
+		Omit(omits...).
+		Preload("Company").
+		Joins("LEFT JOIN companies ON companies.company_id = models.company_id").
+		// Preload("VariantLocal").
+		// Joins("JOIN variant_locals ON variant_locals.model_id = models.model_id").
+		Find(&models, filter)
+
+	// result := pg.Conn.DB.
+	// 	Table("companies c").
+	// 	Select("c.*, m.*, vl.*").
+	// 	Joins("JOIN models m ON c.ID = m.CompanyID").
+	// 	Joins("JOIN variant_locals vl ON m.ID = vl.ModelID").
+	// 	Where("m.IsArchive = false AND vl.IsArchive = false").
+	// 	Find(&models)
 	if result.Error != nil {
 		return []FindModel{}, http.StatusInternalServerError, result.Error
 	}
 
-	return model, http.StatusOK, nil
+	return models, http.StatusOK, nil
 }
 
 func (r *repository) Insert(model Model) (Model, common.Status, error) {
