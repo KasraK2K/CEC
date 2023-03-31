@@ -8,7 +8,7 @@ import (
 
 type VariantLocal struct {
 	ID               uint           `json:"id"                bson:"id"               gorm:"type:uint;primaryKey;<-:false"`
-	ModelID          uint           `json:"model_id"          bson:"model_id"         gorm:"type:uint;"                        validate:"required"`
+	ModelID          uint           `json:"model_id"          bson:"model_id"         gorm:"type:uint;unique"                        validate:"required"`
 	Region           string         `json:"region"            bson:"region"           gorm:"type:string;not null;"             validate:"required"`
 	Price            int64          `json:"price"             bson:"price"            gorm:"type:bigint"`
 	AnnualTax        int64          `json:"annual_tax"        bson:"annual_tax"       gorm:"type:bigint"`

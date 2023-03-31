@@ -18,8 +18,8 @@ type Model struct {
 
 type FindModel struct {
 	Model
-	Company      *Company       `json:"company"       bson:"company"        gorm:"foreignKey:CompanyID"`             // BelongsTo Company
-	VariantLocal []VariantLocal `json:"variant_local" bson:"variant_local"  gorm:"references:ID;foreignKey:ModelID"` // HasMany VariantLocal
+	Company      *Company      `json:"company"       bson:"company"        gorm:"foreignKey:CompanyID"`             // BelongsTo Company
+	VariantLocal *VariantLocal `json:"variant_local" bson:"variant_local"  gorm:"references:ID;foreignKey:ModelID"` // HasMany VariantLocal
 }
 
 type ModelFilter struct {
