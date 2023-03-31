@@ -5,12 +5,13 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 
+	md "app/cmd/models"
 	"app/pkg/helper"
 )
 
 func (h *handler) List(c *fiber.Ctx) error {
 	type JsonData struct {
-		Filter ModelFilter `json:"filter"`
+		Filter md.ModelFilter `json:"filter"`
 	}
 	var payload JsonData
 	err := c.BodyParser(&payload)
@@ -34,7 +35,7 @@ func (h *handler) List(c *fiber.Ctx) error {
 
 func (h *handler) Insert(c *fiber.Ctx) error {
 	type jsonData struct {
-		Data Model `json:"data"`
+		Data md.Model `json:"data"`
 	}
 	var payload jsonData
 
@@ -60,8 +61,8 @@ func (h *handler) Insert(c *fiber.Ctx) error {
 
 func (h *handler) Update(c *fiber.Ctx) error {
 	type JsonData struct {
-		Filter ModelFilter `json:"filter"`
-		Data   ModelUpdate `json:"data"`
+		Filter md.ModelFilter `json:"filter"`
+		Data   md.ModelUpdate `json:"data"`
 	}
 	var payload JsonData
 	err := c.BodyParser(&payload)
@@ -87,7 +88,7 @@ func (h *handler) Update(c *fiber.Ctx) error {
 
 func (h *handler) Archive(c *fiber.Ctx) error {
 	type JsonData struct {
-		Filter ModelFilter `json:"filter"`
+		Filter md.ModelFilter `json:"filter"`
 	}
 	var payload JsonData
 	err := c.BodyParser(&payload)
@@ -112,7 +113,7 @@ func (h *handler) Archive(c *fiber.Ctx) error {
 
 func (h *handler) Restore(c *fiber.Ctx) error {
 	type JsonData struct {
-		Filter ModelFilter `json:"filter"`
+		Filter md.ModelFilter `json:"filter"`
 	}
 	var payload JsonData
 	err := c.BodyParser(&payload)

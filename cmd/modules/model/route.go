@@ -3,11 +3,12 @@ package model
 import (
 	"github.com/gofiber/fiber/v2"
 
+	md "app/cmd/models"
 	"app/pkg/storage/pg"
 )
 
 func Routes(router fiber.Router) {
-	pg.Conn.Migrate(&Model{})
+	pg.Conn.Migrate(&md.Model{})
 
 	modelGroup := router.Group("/model")
 
