@@ -3,11 +3,12 @@ package variant_local
 import (
 	"github.com/gofiber/fiber/v2"
 
+	md "app/cmd/models"
 	"app/pkg/storage/pg"
 )
 
 func Routes(router fiber.Router) {
-	pg.Conn.Migrate(&VariantLocal{})
+	pg.Conn.Migrate(&md.VariantLocal{})
 
 	variantLocalGroup := router.Group("/variant_local")
 
