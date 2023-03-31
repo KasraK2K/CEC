@@ -3,11 +3,12 @@ package portal_user
 import (
 	"github.com/gofiber/fiber/v2"
 
+	md "app/cmd/models"
 	"app/pkg/storage/pg"
 )
 
 func Routes(router fiber.Router) {
-	pg.Conn.Migrate(&PortalUser{})
+	pg.Conn.Migrate(&md.PortalUser{})
 
 	portalUserGroup := router.Group("/portal_user")
 

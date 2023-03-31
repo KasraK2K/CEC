@@ -9,23 +9,24 @@ import (
 	"github.com/mitchellh/mapstructure"
 
 	"app/cmd/common"
+	md "app/cmd/models"
 	"app/pkg/helper"
 )
 
-func (l *logic) List(filter PortalUserFilter) ([]PortalUser, common.Status, error) {
+func (l *logic) List(filter md.PortalUserFilter) ([]md.PortalUser, common.Status, error) {
 	if len(filter.Email) > 0 {
 		filter.Email = strings.ToLower(filter.Email)
 	}
 
 	results, status, err := Repository.List(filter, []string{"password"}...)
 	if err != nil {
-		return []PortalUser{}, status, err
+		return []md.PortalUser{}, status, err
 	}
 
 	return results, status, nil
 }
 
-func (l *logic) Insert(portalUser PortalUser) (PortalUser, common.Status, error) {
+func (l *logic) Insert(portalUser md.PortalUser) (md.PortalUser, common.Status, error) {
 	if len(portalUser.Email) > 0 {
 		portalUser.Email = strings.ToLower(portalUser.Email)
 	}
@@ -34,20 +35,20 @@ func (l *logic) Insert(portalUser PortalUser) (PortalUser, common.Status, error)
 	if len(portalUser.Password) > 0 {
 		hash, err := helper.HashPassword(portalUser.Password)
 		if err != nil {
-			return PortalUser{}, http.StatusInternalServerError, err
+			return md.PortalUser{}, http.StatusInternalServerError, err
 		}
 		portalUser.Password = hash
 	}
 
 	result, status, err := Repository.Insert(portalUser)
 	if err != nil {
-		return PortalUser{}, status, err
+		return md.PortalUser{}, status, err
 	}
 
 	return result, status, nil
 }
 
-func (l *logic) Update(filter PortalUserFilter, update PortalUserUpdate) (PortalUser, common.Status, error) {
+func (l *logic) Update(filter md.PortalUserFilter, update md.PortalUserUpdate) (md.PortalUser, common.Status, error) {
 	if len(filter.Email) > 0 {
 		filter.Email = strings.ToLower(filter.Email)
 	}
@@ -56,60 +57,60 @@ func (l *logic) Update(filter PortalUserFilter, update PortalUserUpdate) (Portal
 		update.Email = strings.ToLower(update.Email)
 	}
 
-	var portalUser PortalUser
+	var portalUser md.PortalUser
 	err := mapstructure.Decode(update, &portalUser)
 	if err != nil {
-		return PortalUser{}, http.StatusInternalServerError, err
+		return md.PortalUser{}, http.StatusInternalServerError, err
 	}
 
 	// Hash password
 	if len(update.Password) > 0 {
 		hash, err := helper.HashPassword(update.Password)
 		if err != nil {
-			return PortalUser{}, http.StatusInternalServerError, err
+			return md.PortalUser{}, http.StatusInternalServerError, err
 		}
 		update.Password = hash
 	}
 
 	result, status, err := Repository.Update(filter, portalUser)
 	if err != nil {
-		return PortalUser{}, status, err
+		return md.PortalUser{}, status, err
 	}
 
 	return result, status, nil
 }
 
-func (l *logic) Archive(filter PortalUserFilter) (PortalUserFilter, common.Status, error) {
+func (l *logic) Archive(filter md.PortalUserFilter) (md.PortalUserFilter, common.Status, error) {
 	if len(filter.Email) > 0 {
 		filter.Email = strings.ToLower(filter.Email)
 	}
 
 	result, status, err := Repository.Archive(filter)
 	if err != nil {
-		return PortalUserFilter{}, status, err
+		return md.PortalUserFilter{}, status, err
 	}
 
 	return result, status, nil
 }
 
-func (l *logic) Restore(filter PortalUserFilter) (PortalUserFilter, common.Status, error) {
+func (l *logic) Restore(filter md.PortalUserFilter) (md.PortalUserFilter, common.Status, error) {
 	if len(filter.Email) > 0 {
 		filter.Email = strings.ToLower(filter.Email)
 	}
 
 	result, status, err := Repository.Restore(filter)
 	if err != nil {
-		return PortalUserFilter{}, status, err
+		return md.PortalUserFilter{}, status, err
 	}
 
 	return result, status, nil
 }
 
-func (l *logic) Login(payload PortalUserLoginPayload) (string, common.Status, error) {
+func (l *logic) Login(payload md.PortalUserLoginPayload) (string, common.Status, error) {
 	if len(payload.Email) > 0 {
 		payload.Email = strings.ToLower(payload.Email)
 	}
-	filter := PortalUserFilter{Email: payload.Email}
+	filter := md.PortalUserFilter{Email: payload.Email}
 
 	results, status, err := Repository.List(filter)
 	if err != nil {
@@ -143,9 +144,9 @@ func (l *logic) ForgotPassword(email string) (string, common.Status, error) {
 	if len(email) > 0 {
 		email = strings.ToLower(email)
 	}
-	filter := PortalUserFilter{Email: email}
+	filter := md.PortalUserFilter{Email: email}
 	password := helper.RandomString(30)
-	update := PortalUserUpdate{Password: password}
+	update := md.PortalUserUpdate{Password: password}
 
 	_, status, err := l.Update(filter, update)
 	if err != nil {

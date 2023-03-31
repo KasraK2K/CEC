@@ -5,12 +5,13 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 
+	md "app/cmd/models"
 	"app/pkg/helper"
 )
 
 func (h *handler) List(c *fiber.Ctx) error {
 	type JsonData struct {
-		Filter PortalUserFilter `json:"filter"`
+		Filter md.PortalUserFilter `json:"filter"`
 	}
 	var payload JsonData
 	err := c.BodyParser(&payload)
@@ -34,7 +35,7 @@ func (h *handler) List(c *fiber.Ctx) error {
 
 func (h *handler) Insert(c *fiber.Ctx) error {
 	type jsonData struct {
-		Data PortalUser `json:"data"`
+		Data md.PortalUser `json:"data"`
 	}
 	var payload jsonData
 
@@ -60,8 +61,8 @@ func (h *handler) Insert(c *fiber.Ctx) error {
 
 func (h *handler) Update(c *fiber.Ctx) error {
 	type JsonData struct {
-		Filter PortalUserFilter `json:"filter"`
-		Data   PortalUserUpdate `json:"data"`
+		Filter md.PortalUserFilter `json:"filter"`
+		Data   md.PortalUserUpdate `json:"data"`
 	}
 	var payload JsonData
 	err := c.BodyParser(&payload)
@@ -87,7 +88,7 @@ func (h *handler) Update(c *fiber.Ctx) error {
 
 func (h *handler) Archive(c *fiber.Ctx) error {
 	type JsonData struct {
-		Filter PortalUserFilter `json:"filter"`
+		Filter md.PortalUserFilter `json:"filter"`
 	}
 	var payload JsonData
 	err := c.BodyParser(&payload)
@@ -112,7 +113,7 @@ func (h *handler) Archive(c *fiber.Ctx) error {
 
 func (h *handler) Restore(c *fiber.Ctx) error {
 	type JsonData struct {
-		Filter PortalUserFilter `json:"filter"`
+		Filter md.PortalUserFilter `json:"filter"`
 	}
 	var payload JsonData
 	err := c.BodyParser(&payload)
@@ -137,7 +138,7 @@ func (h *handler) Restore(c *fiber.Ctx) error {
 
 func (h *handler) Login(c *fiber.Ctx) error {
 	type jsonData struct {
-		Data PortalUserLoginPayload `json:"data" validate:"required"`
+		Data md.PortalUserLoginPayload `json:"data" validate:"required"`
 	}
 	var payload jsonData
 	err := c.BodyParser(&payload)

@@ -8,75 +8,76 @@ import (
 	"gorm.io/gorm"
 
 	"app/cmd/common"
+	md "app/cmd/models"
 	"app/pkg/storage/pg"
 )
 
-func (r *repository) List(filter PortalUserFilter, omits ...string) ([]PortalUser, common.Status, error) {
-	var portalUsers []PortalUser
+func (r *repository) List(filter md.PortalUserFilter, omits ...string) ([]md.PortalUser, common.Status, error) {
+	var portalUsers []md.PortalUser
 
-	result := pg.Conn.DB.Omit(omits...).Model(&PortalUser{}).Find(&portalUsers, filter)
+	result := pg.Conn.DB.Omit(omits...).Model(&md.PortalUser{}).Find(&portalUsers, filter)
 	if result.Error != nil {
-		return []PortalUser{}, http.StatusInternalServerError, result.Error
+		return []md.PortalUser{}, http.StatusInternalServerError, result.Error
 	}
 
 	return portalUsers, http.StatusOK, nil
 }
 
-func (r *repository) Insert(portalUser PortalUser) (PortalUser, common.Status, error) {
-	result := pg.Conn.DB.Model(&PortalUser{}).Create(&portalUser)
+func (r *repository) Insert(portalUser md.PortalUser) (md.PortalUser, common.Status, error) {
+	result := pg.Conn.DB.Model(&md.PortalUser{}).Create(&portalUser)
 	if result.Error != nil {
-		return PortalUser{}, http.StatusInternalServerError, result.Error
+		return md.PortalUser{}, http.StatusInternalServerError, result.Error
 	}
 
 	portalUser.Password = ""
 	return portalUser, http.StatusOK, nil
 }
 
-func (r *repository) Update(filter PortalUserFilter, update PortalUser) (PortalUser, common.Status, error) {
-	result := pg.Conn.DB.Model(&PortalUser{}).Where(filter).Updates(&update).Scan(&update)
+func (r *repository) Update(filter md.PortalUserFilter, update md.PortalUser) (md.PortalUser, common.Status, error) {
+	result := pg.Conn.DB.Model(&md.PortalUser{}).Where(filter).Updates(&update).Scan(&update)
 	if result.Error != nil {
-		return PortalUser{}, http.StatusInternalServerError, result.Error
+		return md.PortalUser{}, http.StatusInternalServerError, result.Error
 	}
 
 	if result.RowsAffected == 0 {
-		return PortalUser{}, http.StatusNotFound, errors.New("can't find any user with this filter")
+		return md.PortalUser{}, http.StatusNotFound, errors.New("can't find any user with this filter")
 	}
 
 	update.Password = ""
 	return update, http.StatusOK, nil
 }
 
-func (r *repository) Archive(filter PortalUserFilter) (PortalUserFilter, common.Status, error) {
+func (r *repository) Archive(filter md.PortalUserFilter) (md.PortalUserFilter, common.Status, error) {
 	updates := map[string]interface{}{
 		"IsArchive": true,
 		"ArchiveAt": gorm.DeletedAt{Time: time.Now(), Valid: true},
 	}
 
-	result := pg.Conn.DB.Model(&PortalUser{}).Where(filter).Updates(updates)
+	result := pg.Conn.DB.Model(&md.PortalUser{}).Where(filter).Updates(updates)
 	if result.Error != nil {
-		return PortalUserFilter{}, http.StatusInternalServerError, result.Error
+		return md.PortalUserFilter{}, http.StatusInternalServerError, result.Error
 	}
 
 	if result.RowsAffected == 0 {
-		return PortalUserFilter{}, http.StatusNotFound, errors.New("can't find any user with this filter")
+		return md.PortalUserFilter{}, http.StatusNotFound, errors.New("can't find any user with this filter")
 	}
 
 	return filter, http.StatusOK, nil
 }
 
-func (r *repository) Restore(filter PortalUserFilter) (PortalUserFilter, common.Status, error) {
+func (r *repository) Restore(filter md.PortalUserFilter) (md.PortalUserFilter, common.Status, error) {
 	updates := map[string]interface{}{
 		"IsArchive": false,
 		"ArchiveAt": gorm.DeletedAt{},
 	}
 
-	result := pg.Conn.DB.Unscoped().Model(&PortalUser{}).Where(filter).Updates(updates)
+	result := pg.Conn.DB.Unscoped().Model(&md.PortalUser{}).Where(filter).Updates(updates)
 	if result.Error != nil {
-		return PortalUserFilter{}, http.StatusInternalServerError, result.Error
+		return md.PortalUserFilter{}, http.StatusInternalServerError, result.Error
 	}
 
 	if result.RowsAffected == 0 {
-		return PortalUserFilter{}, http.StatusNotFound, errors.New("can't find any user with this filter")
+		return md.PortalUserFilter{}, http.StatusNotFound, errors.New("can't find any user with this filter")
 	}
 
 	return filter, http.StatusOK, nil
