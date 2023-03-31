@@ -18,9 +18,9 @@ func (r *repository) List(filter ModelFilter, omits ...string) ([]FindModel, com
 		Omit(omits...).
 		Model(&Model{}).
 		Preload("Company").
-		Joins("LEFT JOIN companies ON companies.company_id = models.company_id").
+		Joins("LEFT JOIN companies ON companies.id = models.company_id").
 		Preload("VariantLocal").
-		Joins("LEFT JOIN variant_locals ON variant_locals.model_id = models.model_id").
+		Joins("LEFT JOIN variant_locals ON variant_locals.model_id = models.id").
 		Find(&models, filter)
 	if result.Error != nil {
 		return []FindModel{}, http.StatusInternalServerError, result.Error
