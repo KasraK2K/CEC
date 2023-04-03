@@ -17,7 +17,7 @@ type Company struct {
 
 type FindCompany struct {
 	Company
-	Model []Model `json:"model" bson:"model" gorm:"foreignKey:CompanyID"` // HasMany Model
+	Model []Model `json:"models" bson:"models" gorm:"references:ID;foreignKey:CompanyID"` // HasMany Model
 }
 
 type CompanyFilter struct {
