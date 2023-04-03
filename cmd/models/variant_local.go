@@ -8,7 +8,7 @@ import (
 
 type VariantLocal struct {
 	ID               uint           `json:"id"                bson:"id"               gorm:"type:uint;primaryKey;<-:false"`
-	ModelID          uint           `json:"model_id"          bson:"model_id"         gorm:"type:uint;unique"                        validate:"required"`
+	ModelID          uint           `json:"model_id"          bson:"model_id"         gorm:"type:uint;unique"                  validate:"required"`
 	Region           string         `json:"region"            bson:"region"           gorm:"type:string;not null;"             validate:"required"`
 	Price            int64          `json:"price"             bson:"price"            gorm:"type:bigint"`
 	AnnualTax        int64          `json:"annual_tax"        bson:"annual_tax"       gorm:"type:bigint"`
@@ -28,9 +28,9 @@ type FindVariantLocal struct {
 }
 
 type VariantLocalFilter struct {
-	ID      uint   `json:"id,omitempty"               bson:"id,omitempty"               validate:"omitempty"`
-	ModelID uint   `json:"model_id,omitempty"         bson:"model_id,omitempty"         validate:"omitempty"`
-	Region  string `json:"region,omitempty"           bson:"region,omitempty"           validate:"omitempty"`
+	ID      uint   `json:"id,omitempty"       bson:"id,omitempty"       validate:"omitempty"`
+	ModelID uint   `json:"model_id,omitempty" bson:"model_id,omitempty" validate:"omitempty"`
+	Region  string `json:"region,omitempty"   bson:"region,omitempty"   validate:"omitempty"`
 }
 
 type VariantLocalUpdate struct {
