@@ -9,6 +9,7 @@ import (
 	"app/cmd/modules/company"
 	"app/cmd/modules/model"
 	"app/cmd/modules/portal_user"
+	"app/cmd/modules/variant"
 	"app/cmd/modules/variant_local"
 	"app/pkg/helper"
 )
@@ -21,6 +22,7 @@ func Routes(app *fiber.App) {
 	company.Routes(v1)
 	model.Routes(v1)
 	portal_user.Routes(v1)
+	variant.Routes(v1)
 	variant_local.Routes(v1)
 
 	// Handle other routes
