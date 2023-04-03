@@ -42,12 +42,12 @@ func CheckPermission(c *fiber.Ctx, indexPermission int) error {
 	var payload helper.Payload
 	mapstructure.Decode(c.Locals("TokenPayload"), &payload)
 
-	if len(payload.Permission) > 0 {
-		reversePermission := helper.ReverseString(payload.Permission)
-		if string(reversePermission[indexPermission]) == "1" {
-			return c.Next()
-		}
+	if !(len(payload.Permission) > 0) {
 		return helper.JSON(c, "invalid access", http.StatusForbidden)
+	}
+
+	if string(payload.Permission[indexPermission]) == "1" {
+		return c.Next()
 	}
 
 	return helper.JSON(c, "access denied", http.StatusForbidden)
