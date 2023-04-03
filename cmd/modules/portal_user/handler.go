@@ -1,6 +1,7 @@
 package portal_user
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
@@ -95,6 +96,8 @@ func (h *handler) Archive(c *fiber.Ctx) error {
 	if err != nil {
 		return helper.JSON(c, err.Error(), http.StatusBadRequest)
 	}
+
+	fmt.Println(payload.Filter)
 
 	// Validate
 	validationError := helper.Validator(payload)

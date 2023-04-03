@@ -7,7 +7,7 @@ import (
 )
 
 type PortalUser struct {
-	PortalUserID  uint           `json:"portal_user_id"     bson:"portal_user_id"     gorm:"type:uint;primaryKey;<-:false"`
+	ID            uint           `json:"id"                 bson:"id"                 gorm:"type:uint;primaryKey;<-:false"`
 	Email         string         `json:"email"              bson:"email"              gorm:"type:string;unique;not null;"            validate:"required,email,min=6,max=32"`
 	Password      string         `json:"password,omitempty" bson:"password,omitempty" gorm:"type:string;check:length(password) >= 8" validate:"required,min=8,max=32"`
 	ContactNumber string         `json:"contact_number"     bson:"contact_number"     gorm:"type:string;"`
@@ -23,15 +23,15 @@ type PortalUser struct {
 }
 
 type PortalUserFilter struct {
-	PortalUserID uint   `json:"portal_user_id,omitempty" bson:"portal_user_id,omitempty" validate:"omitempty"`
-	Email        string `json:"email,omitempty"          bson:"email,omitempty"          validate:"omitempty,email,min=6,max=32"`
-	IsActive     bool   `json:"is_active,omitempty"      bson:"is_active,omitempty"`
-	IsAdmin      bool   `json:"is_admin,omitempty"       bson:"is_admin,omitempty"`
-	IsArchive    bool   `json:"is_archive,omitempty"     bson:"is_archive,omitempty"`
+	ID        uint   `json:"id,omitempty"         bson:"id,omitempty"          validate:"omitempty"`
+	Email     string `json:"email,omitempty"      bson:"email,omitempty"       validate:"omitempty,email,min=6,max=32"`
+	IsActive  bool   `json:"is_active,omitempty"  bson:"is_active,omitempty"`
+	IsAdmin   bool   `json:"is_admin,omitempty"   bson:"is_admin,omitempty"`
+	IsArchive bool   `json:"is_archive,omitempty" bson:"is_archive,omitempty"`
 }
 
 type PortalUserUpdate struct {
-	PortalUserID  uint   `json:"portal_user_id" bson:"portal_user_id"`
+	ID            uint   `json:"id" bson:"id"`
 	Email         string `json:"email"          bson:"email"`
 	Password      string `json:"password"       bson:"password"`
 	ContactNumber string `json:"contact_number" bson:"contact_number"`
@@ -39,7 +39,6 @@ type PortalUserUpdate struct {
 	Surname       string `json:"surname"        bson:"surname"`
 	IsActive      bool   `json:"is_active"      bson:"is_active"`
 	IsAdmin       bool   `json:"is_admin"       bson:"is_admin"`
-	IsArchive     bool   `json:"is_archive"     bson:"is_archive"`
 	Permission    string `json:"permission"     bson:"permission"`
 }
 

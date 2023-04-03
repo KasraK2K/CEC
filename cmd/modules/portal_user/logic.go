@@ -127,7 +127,7 @@ func (l *logic) Login(payload md.PortalUserLoginPayload) (string, common.Status,
 	}
 
 	payloadClaims := helper.PayloadClaims{
-		ID:         portalUser.PortalUserID,
+		ID:         portalUser.ID,
 		Permission: portalUser.Permission,
 		Platform:   payload.Platform,
 		UserType:   helper.Token.UserType.Portal,
