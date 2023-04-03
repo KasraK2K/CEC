@@ -18,10 +18,11 @@ func (r *repository) List(filter md.ModelFilter, omits ...string) ([]md.FindMode
 	// var myData []map[string]interface{}
 
 	result := pg.Conn.DB.
-		Omit(omits...).
 		Model(&md.Model{}).
 		Preload("Company").
+		Preload("Variant").
 		Preload("VariantLocal").
+		Omit(omits...).
 		Find(&models, filter)
 	if result.Error != nil {
 		return []md.FindModel{}, http.StatusInternalServerError, result.Error
