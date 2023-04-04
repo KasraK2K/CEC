@@ -8,6 +8,7 @@ import (
 	"gorm.io/gorm"
 
 	"app/pkg/config"
+	"app/pkg/helper"
 )
 
 type connection struct {
@@ -33,6 +34,7 @@ func (c *connection) Connect() {
 	)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
+		helper.Logger.Critical(err.Error())
 		log.Fatal(err)
 	}
 

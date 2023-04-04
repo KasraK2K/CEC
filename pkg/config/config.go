@@ -19,6 +19,7 @@ type config struct {
 	STDOUT_LOGS             string   `json:"stdout_logs"`
 	FILE_LOGS               string   `json:"file_logs"`
 	UPLOAD_PATH             string   `json:"upload_path"`
+	VALID_UPLOAD_ENDPOINTS  []string `json:"valid_upload_endpoints"`
 	FILE_EXTENSIONS         []string `json:"file_extensions"`
 	FILE_SIZE               int64    `json:"file_size"`
 	STATIC_FILE_URL         string   `json:"static_file_url"`
@@ -52,6 +53,7 @@ func SetConfig() {
 		log.Fatal(err)
 	}
 
+	validUploadEndpoints := strings.Split(os.Getenv("VALID_UPLOAD_ENDPOINTS"), ",")
 	fileExtensions := strings.Split(os.Getenv("FILE_EXTENSIONS"), ",")
 
 	fileSize, err := strconv.ParseInt(os.Getenv("FILE_SIZE"), 10, 64)
@@ -69,6 +71,7 @@ func SetConfig() {
 	AppConfig.STDOUT_LOGS = os.Getenv("STDOUT_LOGS")
 	AppConfig.FILE_LOGS = os.Getenv("FILE_LOGS")
 	AppConfig.UPLOAD_PATH = os.Getenv("UPLOAD_PATH")
+	AppConfig.VALID_UPLOAD_ENDPOINTS = validUploadEndpoints
 	AppConfig.FILE_EXTENSIONS = fileExtensions
 	AppConfig.FILE_SIZE = fileSize
 	AppConfig.STATIC_FILE_URL = os.Getenv("STATIC_FILE_URL")

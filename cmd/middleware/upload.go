@@ -18,7 +18,21 @@ import (
 // TODO : validate file type, validate file size, remove if not valid
 func HandleMultipart(c *fiber.Ctx) error {
 	contentType := c.Get("Content-Type")
+
 	if strings.Contains(contentType, "multipart/form-data") {
+		// If link is valid for upload
+		path := string(c.Request().URI().Path())
+		isValidPath := false
+		for _, item := range config.AppConfig.VALID_UPLOAD_ENDPOINTS {
+			if path == item {
+				isValidPath = true
+			}
+		}
+		if !isValidPath {
+			err := errors.New("upload request is not valid")
+			return helper.JSON(c, err.Error(), http.StatusNotAcceptable)
+		}
+
 		status, err := upload(c)
 		if err != nil {
 			return helper.JSON(c, err.Error(), status)
