@@ -61,6 +61,7 @@ func TestJSON(t *testing.T) {
 		}
 		app := fiber.New()
 		c := app.AcquireCtx(&fasthttp.RequestCtx{})
+		defer app.ReleaseCtx(c)
 
 		err := JSON(c, mockData, http.StatusOK)
 		if err != nil {
@@ -78,6 +79,7 @@ func TestJSON(t *testing.T) {
 		mockData := make(chan int)
 		app := fiber.New()
 		c := app.AcquireCtx(&fasthttp.RequestCtx{})
+		defer app.ReleaseCtx(c)
 
 		err := JSON(c, mockData, http.StatusInternalServerError)
 		if err == nil {
