@@ -21,14 +21,13 @@ func TestAddHeaderMiddleware(t *testing.T) {
 	app.Use(AddHeaderMiddleware)
 
 	req := &http.Request{
-		Method: http.MethodGet,
+		Method: http.MethodPost,
 		URL:    &url.URL{Path: "/"},
 		Header: http.Header{},
 	}
 	resp, err := app.Test(req)
-
 	if err != nil {
-		t.Errorf("Error on sending test request")
+		t.Errorf("AddHeaderMiddleware error on sending test request")
 	}
 
 	allHeaders := resp.Header
