@@ -42,7 +42,7 @@ func CheckPermission(c *fiber.Ctx, indexPermission int) error {
 	var payload helper.Payload
 	mapstructure.Decode(c.Locals("TokenPayload"), &payload)
 
-	if !(len(payload.Permission) > 0) {
+	if len(payload.Permission) <= 0 {
 		return helper.JSON(c, "invalid access", http.StatusForbidden)
 	}
 
