@@ -64,12 +64,12 @@ func (l *logic) Update(filter md.PortalUserFilter, update md.PortalUserUpdate) (
 	}
 
 	// Hash password
-	if len(update.Password) > 0 {
-		hash, err := helper.HashPassword(update.Password)
+	if len(portalUser.Password) > 0 {
+		hash, err := helper.HashPassword(portalUser.Password)
 		if err != nil {
 			return md.PortalUser{}, http.StatusInternalServerError, err
 		}
-		update.Password = hash
+		portalUser.Password = hash
 	}
 
 	result, status, err := Repository.Update(filter, portalUser)
