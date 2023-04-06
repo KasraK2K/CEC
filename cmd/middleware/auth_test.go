@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/gofiber/fiber/v2"
@@ -17,8 +18,19 @@ func TestPullOutToken(t *testing.T) {
 	app := fiber.New()
 	app.Use(PullOutToken)
 
+	claimsPayload := helper.PayloadClaims{
+		ID:         1,
+		Permission: "111",
+		Platform:   1,
+		UserType:   1,
+	}
+	token, err := helper.Token.CreateToken(claimsPayload)
+	if err != nil {
+		t.Errorf("TestPullOutToken error on sign token")
+	}
+
 	ctx := &fasthttp.RequestCtx{}
-	ctx.Request.Header.Set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicGVybWlzc2lvbiI6IjExMTExMTExMTExIiwicGxhdGZvcm0iOjEsInVzZXJfdHlwZSI6MSwic3ViIjoiMSIsImV4cCI6MTY4MDg3Njc4MCwiaWF0IjoxNjgwNzkwMzgwfQ.6H5OIpJdSse0SrXGZe0sO2_FURFVD6BkU_GcTtuJewQ")
+	ctx.Request.Header.Set("Authorization", fmt.Sprintf("Bearer %v", token))
 
 	app.Handler()(ctx)
 
@@ -27,7 +39,7 @@ func TestPullOutToken(t *testing.T) {
 	var payload helper.Payload
 	mapstructure.Decode(tokenPayload, &payload)
 
-	if payload.Permission == "" || payload.ID == 0 || payload.Platform == 0 || payload.UserType == 0 {
+	if payload.Permission != claimsPayload.Permission || payload.ID != claimsPayload.ID || payload.Platform != claimsPayload.Platform || payload.UserType != claimsPayload.UserType {
 		t.Errorf("TestPullOutToken error on finding TestPullOutToken")
 	}
 }
