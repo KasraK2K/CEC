@@ -10,10 +10,10 @@ type Variant struct {
 	ID                            uint           `json:"id"                               bson:"id"                               gorm:"type:uint;primaryKey;<-:false"`
 	CompanyID                     uint           `json:"company_id"                       bson:"company_id"                       gorm:"type:uint;"                        validate:"required"`
 	ModelID                       uint           `json:"model_id"                         bson:"model_id"                         gorm:"type:uint;unique"                  validate:"required"`
-	VariantName                   string         `json:"variant_name"                     bson:"variant_name"                     gorm:"type:string;unique;not null;"`
+	VariantName                   string         `json:"variant_name"                     bson:"variant_name"                     gorm:"type:string;not null;"`
 	Seat                          int            `json:"seat"                             bson:"seat"                             gorm:"type:int"`
-	CarBody                       string         `json:"car_body"                         bson:"car_body"                         gorm:"type:string;unique;not null;"`
-	Type                          string         `json:"type"                             bson:"type"                             gorm:"type:string;unique;not null;"`
+	CarBody                       string         `json:"car_body"                         bson:"car_body"                         gorm:"type:string;not null;"`
+	Type                          string         `json:"type"                             bson:"type"                             gorm:"type:string;not null;"`
 	RealRange                     int            `json:"real_range"                       bson:"real_range"                       gorm:"type:int"`
 	ReleaseYear                   int            `json:"release_year"                     bson:"release_year"                     gorm:"type:int"`
 	RangeCityCold                 int            `json:"range_city_cold"                  bson:"range_city_cold"                  gorm:"type:int"`
@@ -27,13 +27,13 @@ type Variant struct {
 	ChargeTimeMinuteRegular       int            `json:"charge_time_minute_regular"       bson:"charge_time_minute_regular"       gorm:"type:int"`
 	ChargeSpeedRegular            int            `json:"charge_speed_regular"             bson:"charge_speed_regular"             gorm:"type:int"`
 	ChargePowerMaxRegular         int            `json:"charge_power_max_regular"         bson:"charge_power_max_regular"         gorm:"type:int"`
-	ChargePortCharacterRegular    string         `json:"charge_port_character_regular"    bson:"charge_port_character_regular"    gorm:"type:string;unique;not null;"`
-	ChargePortLocationRegular     string         `json:"charge_port_location_regular"     bson:"charge_port_location_regular"     gorm:"type:string;unique;not null;"`
+	ChargePortCharacterRegular    string         `json:"charge_port_character_regular"    bson:"charge_port_character_regular"    gorm:"type:string;not null;"`
+	ChargePortLocationRegular     string         `json:"charge_port_location_regular"     bson:"charge_port_location_regular"     gorm:"type:string;not null;"`
 	ChargeTimeMinuteFastcharge    int            `json:"charge_time_minute_fastcharge"    bson:"charge_time_minute_fastcharge"    gorm:"type:int"`
 	ChargeSpeedFastcharge         int            `json:"charge_speed_fastcharge"          bson:"charge_speed_fastcharge"          gorm:"type:int"`
 	ChargePowerMaxFastcharge      int            `json:"charge_power_max_fastcharge"      bson:"charge_power_max_fastcharge"      gorm:"type:int"`
-	ChargePortCharacterFastcharge string         `json:"charge_port_character_fastcharge" bson:"charge_port_character_fastcharge" gorm:"type:string;unique;not null;"`
-	ChargePortLocationFastcharge  string         `json:"charge_port_location_fastcharge"  bson:"charge_port_location_fastcharge"  gorm:"type:string;unique;not null;"`
+	ChargePortCharacterFastcharge string         `json:"charge_port_character_fastcharge" bson:"charge_port_character_fastcharge" gorm:"type:string;not null;"`
+	ChargePortLocationFastcharge  string         `json:"charge_port_location_fastcharge"  bson:"charge_port_location_fastcharge"  gorm:"type:string;not null;"`
 	ConsumptionCityCold           int            `json:"consumption_city_cold"            bson:"consumption_city_cold"            gorm:"type:int"`
 	ConsumptionHighwayCold        int            `json:"consumption_highway_cold"         bson:"consumption_highway_cold"         gorm:"type:int"`
 	ConsumptionCombinedCold       int            `json:"consumption_combined_cold"        bson:"consumption_combined_cold"        gorm:"type:int"`
@@ -44,7 +44,7 @@ type Variant struct {
 	TopSpeed                      int            `json:"top_speed"                        bson:"top_speed"                        gorm:"type:int"`
 	TotalPowerKw                  int            `json:"total_power_kw"                   bson:"total_power_kw"                   gorm:"type:int"`
 	Co2Emissions                  int            `json:"co2_emissions"                    bson:"co2_emissions"                    gorm:"type:int"`
-	Drive                         string         `json:"drive"                            bson:"drive"                            gorm:"type:string;unique;not null;"`
+	Drive                         string         `json:"drive"                            bson:"drive"                            gorm:"type:string;not null;"`
 	Length                        int            `json:"length"                           bson:"length"                           gorm:"type:int"`
 	Width                         int            `json:"width"                            bson:"width"                            gorm:"type:int"`
 	WidthWithMirror               int            `json:"width_with_mirror"                bson:"width_with_mirror"                gorm:"type:int"`
