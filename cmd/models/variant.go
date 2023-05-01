@@ -40,7 +40,7 @@ type Variant struct {
 	ConsumptionCityMild           int            `json:"consumption_city_mild"            bson:"consumption_city_mild"            gorm:"type:int"`
 	ConsumptionHighwayMild        int            `json:"consumption_highway_mild"         bson:"consumption_highway_mild"         gorm:"type:int"`
 	ConsumptionCombinedMild       int            `json:"consumption_combined_mild"        bson:"consumption_combined_mild"        gorm:"type:int"`
-	AccelerationReal              int            `json:"acceleration_real"                bson:"acceleration_real"                gorm:"type:int"`
+	AccelerationReal              int            `json:"acceleration"                     bson:"acceleration"                     gorm:"type:int"`
 	TopSpeed                      int            `json:"top_speed"                        bson:"top_speed"                        gorm:"type:int"`
 	TotalPowerKw                  int            `json:"total_power_kw"                   bson:"total_power_kw"                   gorm:"type:int"`
 	Co2Emissions                  int            `json:"co2_emissions"                    bson:"co2_emissions"                    gorm:"type:int"`
@@ -115,7 +115,7 @@ type VariantUpdate struct {
 	ConsumptionCityMild           int    `json:"consumption_city_mild"            bson:"consumption_city_mild"`
 	ConsumptionHighwayMild        int    `json:"consumption_highway_mild"         bson:"consumption_highway_mild"`
 	ConsumptionCombinedMild       int    `json:"consumption_combined_mild"        bson:"consumption_combined_mild"`
-	AccelerationReal              int    `json:"acceleration_real"                bson:"acceleration_real"`
+	AccelerationReal              int    `json:"acceleration"                bson:"acceleration"`
 	TopSpeed                      int    `json:"top_speed"                        bson:"top_speed"`
 	TotalPowerKw                  int    `json:"total_power_kw"                   bson:"total_power_kw"`
 	Co2Emissions                  int    `json:"co2_emissions"                    bson:"co2_emissions"`
