@@ -1,6 +1,7 @@
 /.vscode
 /log
 /uploads
+/docker/backup
 
 .env
-api*
+docker/backend*
