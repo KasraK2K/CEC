@@ -23,6 +23,7 @@ type config struct {
 	FILE_EXTENSIONS         []string `json:"file_extensions"`
 	FILE_SIZE               int64    `json:"file_size"`
 	STATIC_FILE_URL         string   `json:"static_file_url"`
+	DB_DSN                  string   `json:"db_dsn"`
 	DB_HOST                 string   `json:"db_host"`
 	DB_PORT                 string   `json:"db_port"`
 	DB_PASSWORD             string   `json:"dn_password"`
@@ -76,6 +77,7 @@ func SetConfig(environmentPath string) {
 	AppConfig.FILE_SIZE = fileSize
 	AppConfig.STATIC_FILE_URL = os.Getenv("STATIC_FILE_URL")
 	// PostgreSQL Database
+	AppConfig.DB_DSN = os.Getenv("DB_DSN")
 	AppConfig.DB_HOST = os.Getenv("DB_HOST")
 	AppConfig.DB_PORT = os.Getenv("DB_PORT")
 	AppConfig.DB_PASSWORD = os.Getenv("DB_PASSWORD")

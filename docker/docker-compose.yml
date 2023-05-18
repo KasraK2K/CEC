@@ -14,17 +14,13 @@ services:
       mode: replicated
       replicas: 1
     environment:
-      - DB_HOST=0.0.0.0
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres
-      - DB_NAME=cec
-      - DB_PORT=5432
-      - DB_SSL_MODE=disable
-      - DB_TIMEZONE=Asia/Tehran
-      - MONGODB_URI="mongodb://mongo/?readPreference=primary&ssl=false&directConnection=true"
+      DB_DSN: "host=postgres user=postgres password=postgres dbname=cec sslmode=disable TimeZone=Asia/Tehran"
+      MONGODB_URI: "mongodb://localhost:27017/?readPreference=primary&ssl=false&directConnection=true"
+    networks:
+      - backend
     depends_on:
       - postgres
-      # - mongo
+      - mongo
 
   postgres:
     container_name: "postgres"
@@ -34,11 +30,13 @@ services:
       mode: replicated
       replicas: 1
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=cec
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: cec
     ports:
       - "5432:5432"
+    networks:
+      - postgres
     volumes:
       - ./backup/pg-data:/var/lib/postgresql/data
 
@@ -49,8 +47,16 @@ services:
     ports:
       - "27017:27017"
     environment:
-      - PUID=1000
-      - PGID=1000
+      PUID: 1000
+      PGID: 1000
+      MONGO_INITDB_DATABASE: cec
+    networks:
+      - mongo
     volumes:
       - ./backup/mongo-data:/data/db
       - ./backup/mongo-config:/data/configdb
+
+networks:
+  backend:
+  postgres:
+  mongo:
