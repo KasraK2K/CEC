@@ -13,7 +13,7 @@ import (
 )
 
 func TestPullOutToken(t *testing.T) {
-	config.SetConfig("../../pkg/config/.env")
+	config.SetConfig("pkg/config/.env")
 
 	app := fiber.New()
 	app.Use(PullOutToken)

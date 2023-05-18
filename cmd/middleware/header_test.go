@@ -12,7 +12,7 @@ import (
 )
 
 func TestAddHeaderMiddleware(t *testing.T) {
-	config.SetConfig("../../pkg/config/.env")
+	config.SetConfig("pkg/config/.env")
 
 	app := fiber.New()
 	c := app.AcquireCtx(&fasthttp.RequestCtx{})
