@@ -1,62 +1,44 @@
 version: '3.8'
 
 services:
-
+  
   backend:
     build:
       context: "."
       dockerfile: "./Dockerfile"
     container_name: "backend"
+    restart: unless-stopped
     ports:
       - "3000:3000"
-    restart: always
     deploy:
       mode: replicated
       replicas: 1
-    environment:
-      DB_DSN: "host=postgres user=postgres password=postgres dbname=cec sslmode=disable TimeZone=Asia/Tehran"
-      MONGODB_URI: "mongodb://localhost:27017/?readPreference=primary&ssl=false&directConnection=true"
-    networks:
-      - backend
-    depends_on:
-      - postgres
-      - mongo
 
   postgres:
-    container_name: "postgres"
-    image: postgres:latest
+    image: 'postgres:latest'
+    container_name: 'postgres'
     restart: unless-stopped
     deploy:
       mode: replicated
       replicas: 1
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: cec
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=cec
     ports:
       - "5432:5432"
-    networks:
-      - postgres
     volumes:
       - ./backup/pg-data:/var/lib/postgresql/data
 
   mongo:
-    container_name: "mongo"
     image: mongo:latest
+    container_name: "mongo"
     restart: unless-stopped
-    ports:
-      - "27017:27017"
     environment:
       PUID: 1000
       PGID: 1000
       MONGO_INITDB_DATABASE: cec
-    networks:
-      - mongo
+    ports:
+      - "27017:27017"
     volumes:
       - ./backup/mongo-data:/data/db
       - ./backup/mongo-config:/data/configdb
-
-networks:
-  backend:
-  postgres:
-  mongo:
