@@ -52,10 +52,10 @@ func SetConfig() {
 
 	mode := os.Getenv("MODE")
 	var envPath string
-	if len(mode) > 0 && mode == "production" {
-		envPath = "/var/api/cec/api/pkg/config/.env"
-	} else {
+	if len(mode) > 0 && mode == "development" {
 		envPath = filepath.Join(wd, "pkg/config/.env")
+	} else {
+		envPath = "/var/api/cec/api/pkg/config/.env"
 	}
 
 	err = godotenv.Load(envPath)
