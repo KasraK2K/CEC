@@ -51,14 +51,13 @@ func SetConfig() {
 	}
 
 	var mode string
-	var envFilePath string
+	var envPath string
 	if mode == "development" {
-		envFilePath = "pkg/config/.env"
+		envPath = filepath.Join(wd, "pkg/config/.env")
 	} else {
-		envFilePath = "/var/api/cec/api/pkg/config/.env"
+		envPath = "/var/api/cec/api/pkg/config/.env"
 	}
 
-	envPath := filepath.Join(wd, envFilePath)
 	err = godotenv.Load(envPath)
 	if err != nil {
 		log.Fatal(err)
