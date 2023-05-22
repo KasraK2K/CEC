@@ -24,5 +24,5 @@ down:
 ## build_backend: builds the api binary as a linux executable
 build_backend:
 	@echo "Building api binary..."
-	env GOOS=linux CGO_ENABLED=0 go build -o ${API_BINARY} ../cmd/api
+	env GOOS=linux CGO_ENABLED=0 MODE=development go build -o ${API_BINARY} ../cmd/api
 	@echo "Done!"
