@@ -17,6 +17,5 @@ gunzip < your_dump.sql.gz | docker exec -i your-db-container psql -U postgres
 ## Run Docker
 
 ```bash
-cd docker
 make up_build
 ```
