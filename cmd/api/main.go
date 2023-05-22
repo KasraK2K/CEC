@@ -3,8 +3,6 @@ package main
 import (
 	"fmt"
 	"log"
-	"os"
-	"path/filepath"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -27,19 +25,6 @@ import (
 func main() {
 	config.SetConfig()
 	pg.Conn.Connect()
-
-	absPath, err := filepath.Abs(".")
-	if err != nil {
-		panic(err)
-	}
-
-	wd, err := os.Getwd()
-	if err != nil {
-		log.Panic(err)
-	}
-
-	fmt.Println("absPath:", absPath)
-	fmt.Println("wd:", wd)
 
 	app := fiber.New(fiber.Config{
 		Prefork:       config.AppConfig.PREFORK,
