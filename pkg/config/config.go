@@ -3,6 +3,7 @@ package config
 import (
 	"log"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -43,8 +44,14 @@ type config struct {
 
 var AppConfig config
 
-func SetConfig(environmentPath string) {
-	err := godotenv.Load(environmentPath)
+func SetConfig() {
+	wd, err := os.Getwd()
+	if err != nil {
+		log.Panic(err)
+	}
+
+	envPath := filepath.Join(wd, "pkg/config/.env")
+	err = godotenv.Load(envPath)
 	if err != nil {
 		log.Fatal(err)
 	}

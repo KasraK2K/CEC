@@ -23,7 +23,7 @@ import (
 )
 
 func main() {
-	config.SetConfig("pkg/config/.env")
+	config.SetConfig()
 	pg.Conn.Connect()
 
 	app := fiber.New(fiber.Config{
