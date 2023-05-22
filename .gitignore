@@ -6,3 +6,4 @@
 .env
 docker/backend*
 /api*
+docker/.env
