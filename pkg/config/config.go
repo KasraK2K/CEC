@@ -50,8 +50,9 @@ func SetConfig() {
 		log.Panic(err)
 	}
 
+	var mode string
 	var envPath string
-	if os.Getenv("MODE") == "development" {
+	if mode == "development" {
 		envPath = filepath.Join(wd, "pkg/config/.env")
 	} else {
 		envPath = "/var/api/cec/api/pkg/config/.env"
